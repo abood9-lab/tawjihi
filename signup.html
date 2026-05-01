@@ -1,0 +1,417 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>تسجيل الدخول | TawjihiGuide</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Noto Sans Arabic", "Lexend", sans-serif;
+            background-color: #f8f9ff;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+        }
+
+        .tab-active {
+            color: #00346f;
+            border-bottom: 2px solid #00346f;
+        }
+
+        .tab-idle {
+            color: #737783;
+            border-bottom: 2px solid transparent;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-[1100px] grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-white shadow-sm border border-outline-variant rounded-xl min-h-[700px]">
+        <div class="hidden lg:flex lg:col-span-5 relative bg-primary p-12 flex-col justify-between overflow-hidden">
+            <div class="absolute inset-0 z-0 opacity-20">
+                <img class="w-full h-full object-cover" alt="طلاب في بيئة تعليمية" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7Wh_ZXjV-YGsbQl4QEyWW_a-vrykCf-3zwnEqAO4tQxO0D0SQLag358IErMTmTEPUSp32gQ9Lgv7dROPer6pLleHeG0ApJRik0nnZORGnD5xtzUhG2C1ysct3AShC6EPq334rtBfsvPBxrQmaYGF0MSN_iGV7re0JRd5r7JSiDDA3RkVwNwfK4l2kzSP92aVMheqT9J58zuuKv95YwvUXTRmyDg2VCoGsBs-Dy-X9RtwUwWIMCHwy5oUvB9izNhfommJOOB8A0aVI" />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-primary-container/80 z-10"></div>
+            <div class="relative z-20">
+                <h1 class="text-white text-3xl font-bold tracking-tight">TawjihiGuide</h1>
+                <p class="text-on-primary-container text-base mt-2">منصتكم نحو التميز الأكاديمي</p>
+            </div>
+            <div class="relative z-20 space-y-6">
+                <div class="flex items-center gap-4 text-white">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined">menu_book</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">محتوى تعليمي شامل</h3>
+                        <p class="text-on-primary-container text-sm">دروس مصورة ومواد تعليمية لجميع المباحث</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-white">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined">quiz</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold">بنك أسئلة ذكي</h3>
+                        <p class="text-on-primary-container text-sm">آلاف الأسئلة الوزارية والتدريبية التفاعلية</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative z-20 text-white/50 text-sm">© 2026 TawjihiGuide. جميع الحقوق محفوظة.</div>
+        </div>
+
+        <div class="lg:col-span-7 bg-white p-8 md:p-16 flex flex-col justify-center">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex space-x-reverse space-x-8 border-b border-outline-variant">
+                    <button id="tabLogin" class="pb-4 text-xl font-semibold tab-active" type="button" data-i18n="tabLogin">تسجيل الدخول</button>
+                    <button id="tabSignup" class="pb-4 text-xl font-semibold tab-idle" type="button" data-i18n="tabSignup">إنشاء حساب</button>
+                </div>
+                <div class="flex gap-2">
+                    <button id="langAr" class="px-3 py-1 rounded bg-primary text-white">AR</button>
+                    <button id="langEn" class="px-3 py-1 rounded border">EN</button>
+                </div>
+            </div>
+
+            <div id="statusBox" class="hidden mb-6 rounded-xl border px-4 py-3 text-sm" role="status" aria-live="polite"></div>
+
+            <section id="loginPanel" class="space-y-6">
+                <div>
+                    <h2 id="loginTitle" class="text-3xl font-bold text-primary mb-2" data-i18n="loginTitle">أهلاً بك مجدداً</h2>
+                    <p id="loginDesc" class="text-on-surface-variant" data-i18n="loginDesc">يرجى إدخال بياناتك للمتابعة في رحلتك التعليمية.</p>
+                </div>
+
+                <form id="loginForm" class="space-y-5">
+                    <div class="space-y-2">
+                        <label class="block text-sm text-on-surface-variant px-1" data-i18n="emailLabel">البريد الإلكتروني</label>
+                        <div class="relative group">
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary">mail</span>
+                              <input id="loginEmail" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-4 pr-12 pl-4 focus:ring-2 focus:ring-primary focus:border-primary text-base outline-none" placeholder="example@gmail.com" type="email" required data-i18n-placeholder="emailPlaceholder" />
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm text-on-surface-variant px-1" data-i18n="passwordLabel">كلمة المرور</label>
+                        <div class="relative group">
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary">lock</span>
+                              <input id="loginPassword" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-4 pr-12 pl-4 focus:ring-2 focus:ring-primary focus:border-primary text-base outline-none" placeholder="********" type="password" required data-i18n-placeholder="passwordPlaceholder" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <button id="forgotPasswordBtn" class="text-sm text-primary font-bold hover:underline" type="button" data-i18n="forgotPassword">نسيت كلمة المرور؟</button>
+                        <button id="loginSubmit" class="bg-primary text-white px-4 py-2 rounded-xl hover:bg-primary-container" type="submit" data-i18n="loginSubmit">تسجيل الدخول</button>
+                    </div>
+                </form>
+
+                <button id="googleLoginBtn" class="w-full border border-outline-variant rounded-xl py-3 hover:bg-surface-container-low" type="button" data-i18n="continueGoogle">المتابعة بواسطة Google</button>
+            </section>
+
+            <section id="signupPanel" class="space-y-6 hidden">
+                <div>
+                    <h2 id="signupTitle" class="text-3xl font-bold text-primary mb-2" data-i18n="signupTitle">أنشئ حسابك الآن</h2>
+                    <p id="signupDesc" class="text-on-surface-variant" data-i18n="signupDesc">بعد التسجيل سنرسل رسالة تحقق إلى بريدك الإلكتروني.</p>
+                </div>
+
+                <form id="signupForm" class="space-y-5">
+                    <div class="space-y-2">
+                        <label class="block text-sm text-on-surface-variant px-1" data-i18n="emailLabel">البريد الإلكتروني</label>
+                        <input id="signupEmail" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary focus:border-primary text-base outline-none" placeholder="example@gmail.com" type="email" required data-i18n-placeholder="emailPlaceholder" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm text-on-surface-variant px-1" data-i18n="passwordLabel">كلمة المرور (6 أحرف على الأقل)</label>
+                        <input id="signupPassword" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary focus:border-primary text-base outline-none" placeholder="********" type="password" minlength="6" required data-i18n-placeholder="passwordPlaceholder" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm text-on-surface-variant px-1" data-i18n="confirmPassword">تأكيد كلمة المرور</label>
+                        <input id="signupConfirmPassword" class="w-full bg-surface-container-low border border-outline-variant rounded-xl py-4 px-4 focus:ring-2 focus:ring-primary focus:border-primary text-base outline-none" placeholder="********" type="password" minlength="6" required data-i18n-placeholder="passwordPlaceholder" />
+                    </div>
+                    <button id="signupSubmit" class="w-full bg-primary text-white py-4 rounded-xl hover:bg-primary-container" type="submit" data-i18n="signupSubmit">إنشاء حساب</button>
+                </form>
+            </section>
+
+            <div class="mt-10 text-center text-sm text-on-surface-variant">
+                التحقق عبر الإيميل يتم من Firebase Authentication مباشرة.
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed top-0 left-0 w-64 h-64 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none"></div>
+    <div class="fixed bottom-0 right-0 w-96 h-96 bg-secondary/5 rounded-full translate-x-1/3 translate-y-1/3 blur-3xl pointer-events-none"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            sendEmailVerification,
+            signInWithEmailAndPassword,
+            signInWithPopup,
+            GoogleAuthProvider,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+            authDomain: "tawj-d1f01.firebaseapp.com",
+            projectId: "tawj-d1f01",
+            storageBucket: "tawj-d1f01.firebasestorage.app",
+            messagingSenderId: "124295262421",
+            appId: "1:124295262421:web:87cd51227a13e0a710725c",
+            measurementId: "G-JQX9E7H4KB"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.emailVerified) {
+                window.location.href = "dashboard.html";
+            }
+        });
+
+        try {
+            getAnalytics(app);
+        } catch (error) {
+            console.warn("Analytics غير متاح في هذا السياق:", error?.message || error);
+        }
+
+        const tabLogin = document.getElementById("tabLogin");
+        const tabSignup = document.getElementById("tabSignup");
+        const loginPanel = document.getElementById("loginPanel");
+        const signupPanel = document.getElementById("signupPanel");
+        const statusBox = document.getElementById("statusBox");
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+        const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+        const googleLoginBtn = document.getElementById("googleLoginBtn");
+
+        const translations = {
+            ar: {
+                tabLogin: "تسجيل الدخول",
+                tabSignup: "إنشاء حساب",
+                loginTitle: "أهلاً بك مجدداً",
+                loginDesc: "يرجى إدخال بياناتك للمتابعة في رحلتك التعليمية.",
+                signupTitle: "أنشئ حسابك الآن",
+                signupDesc: "بعد التسجيل سنرسل رسالة تحقق إلى بريدك الإلكتروني.",
+                emailLabel: "البريد الإلكتروني",
+                emailPlaceholder: "example@gmail.com",
+                passwordLabel: "كلمة المرور",
+                passwordPlaceholder: "********",
+                forgotPassword: "نسيت كلمة المرور؟",
+                loginSubmit: "تسجيل الدخول",
+                signupSubmit: "إنشاء حساب",
+                continueGoogle: "المتابعة بواسطة Google",
+                successCreated: "تم إنشاء الحساب. أرسلنا رابط التحقق إلى بريدك الإلكتروني.",
+                successLogin: "تم تسجيل الدخول بنجاح.",
+                notVerified: "بريدك غير مفعل. أرسلنا رابط تحقق. تحقق من البريد.",
+                enterEmailForReset: "أدخل بريدك الإلكتروني أولاً لإرسال رابط إعادة تعيين كلمة المرور.",
+                resetSent: "تم إرسال رابط إعادة تعيين كلمة المرور إلى البريد الإلكتروني.",
+                passwordMismatch: "كلمتا المرور غير متطابقتين.",
+                googleSuccess: "تم تسجيل الدخول بواسطة Google بنجاح.",
+                unknownError: "حدث خطأ غير متوقع. حاول مرة أخرى.",
+            },
+            en: {
+                tabLogin: "Login",
+                tabSignup: "Sign up",
+                loginTitle: "Welcome back",
+                loginDesc: "Enter your details to continue your learning journey.",
+                signupTitle: "Create your account",
+                signupDesc: "After signing up we'll send a verification email.",
+                emailLabel: "Email",
+                emailPlaceholder: "example@gmail.com",
+                passwordLabel: "Password",
+                passwordPlaceholder: "********",
+                forgotPassword: "Forgot password?",
+                loginSubmit: "Sign in",
+                signupSubmit: "Create account",
+                continueGoogle: "Continue with Google",
+                successCreated: "Account created. We sent a verification link to your email.",
+                successLogin: "Signed in successfully.",
+                notVerified: "Email not verified. We re-sent a verification link.",
+                enterEmailForReset: "Enter your email first to send a password reset link.",
+                resetSent: "Password reset link sent to the email.",
+                passwordMismatch: "Passwords do not match.",
+                googleSuccess: "Signed in with Google successfully.",
+                unknownError: "Unexpected error. Please try again.",
+            }
+        };
+
+        let currentLang = 'ar';
+
+        function showStatus(message, type = "info") {
+            statusBox.textContent = message;
+            statusBox.classList.remove("hidden", "border-error", "bg-red-50", "text-error", "border-secondary", "bg-green-50", "text-secondary", "border-outline-variant", "bg-surface-container-low", "text-on-surface-variant");
+
+            if (type === "error") {
+                statusBox.classList.add("border-error", "bg-red-50", "text-error");
+            } else if (type === "success") {
+                statusBox.classList.add("border-secondary", "bg-green-50", "text-secondary");
+            } else {
+                statusBox.classList.add("border-outline-variant", "bg-surface-container-low", "text-on-surface-variant");
+            }
+        }
+
+        function mapAuthError(error) {
+            const code = error?.code || "";
+            const isAr = currentLang === "ar";
+            const messages = {
+                "auth/invalid-email": isAr ? "صيغة البريد الإلكتروني غير صحيحة." : "Invalid email format.",
+                "auth/user-not-found": isAr ? "لا يوجد حساب بهذا البريد." : "No account found with this email.",
+                "auth/wrong-password": isAr ? "كلمة المرور غير صحيحة." : "Incorrect password.",
+                "auth/invalid-credential": isAr ? "البريد أو كلمة المرور غير صحيحة." : "Invalid email or password.",
+                "auth/email-already-in-use": isAr ? "هذا البريد مستخدم بالفعل." : "This email is already in use.",
+                "auth/weak-password": isAr ? "كلمة المرور ضعيفة. استخدم 6 أحرف أو أكثر." : "Weak password. Use at least 6 characters.",
+                "auth/too-many-requests": isAr ? "محاولات كثيرة جداً. حاول لاحقاً." : "Too many attempts. Try again later.",
+                "auth/network-request-failed": isAr ? "مشكلة في الاتصال بالإنترنت." : "Network error. Check your connection.",
+                "auth/popup-closed-by-user": isAr ? "تم إغلاق نافذة تسجيل Google قبل الإكمال." : "Google sign-in popup was closed before completion."
+            };
+            return messages[code] || translations[currentLang].unknownError;
+        }
+
+        function applyTranslations() {
+            const map = translations[currentLang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (map[key]) el.textContent = map[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (map[key]) el.placeholder = map[key];
+            });
+        }
+
+        document.getElementById('langAr').addEventListener('click', () => { currentLang = 'ar'; applyTranslations(); });
+        document.getElementById('langEn').addEventListener('click', () => { currentLang = 'en'; applyTranslations(); });
+
+        // Apply initial translations
+        applyTranslations();
+
+        function switchTab(mode) {
+            const isLogin = mode === "login";
+            loginPanel.classList.toggle("hidden", !isLogin);
+            signupPanel.classList.toggle("hidden", isLogin);
+
+            tabLogin.classList.toggle("tab-active", isLogin);
+            tabLogin.classList.toggle("tab-idle", !isLogin);
+            tabSignup.classList.toggle("tab-active", !isLogin);
+            tabSignup.classList.toggle("tab-idle", isLogin);
+        }
+
+        tabLogin.addEventListener("click", () => switchTab("login"));
+        tabSignup.addEventListener("click", () => switchTab("signup"));
+
+        signupForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value;
+            const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+            if (password !== confirmPassword) {
+                showStatus(translations[currentLang].passwordMismatch, "error");
+                return;
+            }
+
+            try {
+                const credential = await createUserWithEmailAndPassword(auth, email, password);
+                await sendEmailVerification(credential.user);
+                showStatus(translations[currentLang].successCreated, "success");
+                switchTab("login");
+            } catch (error) {
+                showStatus(mapAuthError(error), "error");
+            }
+        });
+
+        loginForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value;
+
+            try {
+                const credential = await signInWithEmailAndPassword(auth, email, password);
+                if (!credential.user.emailVerified) {
+                    await sendEmailVerification(credential.user);
+                    showStatus(translations[currentLang].notVerified, "info");
+                    return;
+                }
+
+                showStatus(translations[currentLang].successLogin, "success");
+                // Redirect to dashboard
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+            } catch (error) {
+                showStatus(mapAuthError(error), "error");
+            }
+        });
+
+        forgotPasswordBtn.addEventListener("click", async () => {
+            const email = document.getElementById("loginEmail").value.trim();
+            if (!email) {
+                showStatus(translations[currentLang].enterEmailForReset, "error");
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showStatus(translations[currentLang].resetSent, "success");
+            } catch (error) {
+                showStatus(mapAuthError(error), "error");
+            }
+        });
+
+        googleLoginBtn.addEventListener("click", async () => {
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+                showStatus(translations[currentLang].googleSuccess, "success");
+                setTimeout(() => { window.location.href = "dashboard.html"; }, 500);
+            } catch (error) {
+                showStatus(mapAuthError(error), "error");
+            }
+        });
+    </script>
+    <script src="site-shell.js" defer></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

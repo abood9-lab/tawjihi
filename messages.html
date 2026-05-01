@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+    <title>المراسلات - TawjihiGuide</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { "primary": "#00346f", "secondary": "#2c694e", "background": "#f8f9ff" } } }
+        }
+    </script>
+    <style>
+        body { font-family: 'Noto Sans Arabic', sans-serif; background-color: #f8f9ff; -webkit-tap-highlight-color: transparent; }
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        .active-scale:active { transform: scale(0.95); transition: 0.1s; }
+        .gradient-hero { background: linear-gradient(135deg, #00346f 0%, #2c694e 100%); }
+    </style>
+</head>
+<body class="bg-background text-slate-900 pb-24 lg:pb-0">
+
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 glass-header border-b border-slate-200">
+    <span class="text-xl font-black text-primary">TawjihiGuide</span>
+    <a href="dashboard.html" class="p-2 hover:bg-slate-100 rounded-full transition-all">
+        <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+</header>
+
+<aside class="hidden lg:flex flex-col fixed right-0 top-16 h-[calc(100vh-64px)] w-64 p-4 bg-white border-l border-slate-200 z-40">
+    <nav class="flex-1 space-y-2 mt-4 text-right">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">dashboard</span> لوحة التحكم
+        </a>
+        <a href="messages.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-primary font-bold rounded-xl shadow-sm">
+            <span class="material-symbols-outlined">mail</span> المراسلات
+        </a>
+        <a href="search-users.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl">
+            <span class="material-symbols-outlined">people</span> البحث عن الطلاب
+        </a>
+    </nav>
+</aside>
+
+<main class="lg:mr-64 pt-24 px-4 md:px-12 pb-12">
+    <div class="max-w-5xl mx-auto text-right">
+        <header class="mb-8">
+            <h1 class="text-3xl font-black text-slate-800">المراسلات</h1>
+            <p class="text-slate-500 font-medium">تابع محادثاتك مع الطلاب الآخرين</p>
+        </header>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- Left Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-slate-100 bg-slate-50">
+                        <h3 class="font-black text-slate-800">المحادثات</h3>
+                    </div>
+                    <div id="conversationsList" class="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+                        <div class="p-4 text-center text-slate-400 text-sm">لا توجد محادثات حالياً</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chat Area -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm h-[600px] flex flex-col">
+                    <div class="p-6 border-b border-slate-100 bg-gradient-to-r from-primary/5 to-secondary/5">
+                        <h2 class="font-black text-slate-800 text-lg">متابعة محادثاتك</h2>
+                        <p class="text-sm text-slate-500">استخدم WhiterChat للمراسلة المباشرة</p>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-center p-8">
+                        <span class="material-symbols-outlined text-6xl text-slate-200 mb-4">mail</span>
+                        <h3 class="text-xl font-black text-slate-800 mb-2">لا توجد محادثات نشطة</h3>
+                        <p class="text-slate-500 mb-6 text-center">اختر محادثة من الجانب أو ابدأ محادثة جديدة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhiterChat Card -->
+        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl p-8 md:p-12 text-white shadow-2xl text-center">
+            <div class="flex justify-center mb-6">
+                <span class="material-symbols-outlined text-6xl">forum</span>
+            </div>
+            <h2 class="text-3xl font-black mb-3">احصل على تجربة مراسلة كاملة</h2>
+            <p class="text-white/80 mb-8 text-lg">استخدم WhiterChat للمراسلة المباشرة مع جميع الطلاب والمعلمين بكل حرية</p>
+            <button onclick="goToWhiterChat()" class="bg-white text-primary font-black px-10 py-4 rounded-2xl hover:bg-slate-100 active-scale transition-all text-lg shadow-lg">
+                <span class="flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">open_in_new</span>
+                    الانتقال إلى WhiterChat
+                </span>
+            </button>
+            <p class="text-white/60 text-sm mt-4">أضف معرفك في الملف الشخصي لتلقي الرسائل</p>
+        </div>
+
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-primary text-3xl mt-1">lock</span>
+                    <div class="text-right flex-1">
+                        <h3 class="font-black text-slate-800 mb-2">محادثات آمنة</h3>
+                        <p class="text-slate-500 text-sm">جميع رسائلك محمية وخاصة بك</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-secondary text-3xl mt-1">group</span>
+                    <div class="text-right flex-1">
+                        <h3 class="font-black text-slate-800 mb-2">تواصل مع الجميع</h3>
+                        <p class="text-slate-500 text-sm">تواصل مع الطلاب والمعلمين مباشرة</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-amber-500 text-3xl mt-1">notifications_active</span>
+                    <div class="text-right flex-1">
+                        <h3 class="font-black text-slate-800 mb-2">إشعارات فورية</h3>
+                        <p class="text-slate-500 text-sm">احصل على إشعارات لكل رسالة جديدة</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-start gap-4">
+                    <span class="material-symbols-outlined text-green-500 text-3xl mt-1">cloud_sync</span>
+                    <div class="text-right flex-1">
+                        <h3 class="font-black text-slate-800 mb-2">مزامنة سحابية</h3>
+                        <p class="text-slate-500 text-sm">الوصول إلى رسائلك من أي جهاز</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<nav class="lg:hidden fixed bottom-0 w-full glass-header border-t border-slate-200 z-[70] safe-bottom h-16 flex justify-around items-center">
+    <a href="dashboard.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-[10px] font-bold">الرئيسية</span>
+    </a>
+    <a href="messages.html" class="flex flex-col items-center gap-1 text-primary">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mail</span>
+        <span class="text-[10px] font-black">المراسلات</span>
+    </a>
+    <a href="search-users.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <span class="material-symbols-outlined">people</span>
+        <span class="text-[10px] font-bold">الطلاب</span>
+    </a>
+</nav>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+        authDomain: "tawj-d1f01.firebaseapp.com",
+        projectId: "tawj-d1f01",
+        storageBucket: "tawj-d1f01.firebasestorage.app",
+        messagingSenderId: "124295262421",
+        appId: "1:124295262421:web:87cd51227a13e0a710725c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.goToWhiterChat = () => {
+        window.open('https://whiterchat.me', '_blank');
+    };
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = 'signup.html';
+        }
+    });
+</script>
+<script src="site-shell.js" defer></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

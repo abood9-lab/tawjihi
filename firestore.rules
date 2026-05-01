@@ -1,0 +1,196 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && request.auth.token.email == 'shahedalmefleh850@gmail.com';
+    }
+
+    function isTeacherUser() {
+      return isSignedIn() && (
+        request.auth.token.role == 'teacher' ||
+        (request.auth.token.email != null && exists(/databases/$(database)/documents/teacher_emails/$(request.auth.token.email))) ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isTeacher == true
+        ))
+      );
+    }
+
+    function roomRef(roomId) {
+      return /databases/$(database)/documents/study-rooms/$(roomId);
+    }
+
+    function roomDoc(roomId) {
+      return get(/databases/$(database)/documents/study-rooms/$(roomId));
+    }
+
+    match /study-rooms/{roomId} {
+      allow get, list: if isSignedIn();
+
+      allow create: if isSignedIn() &&
+        request.resource.data.createdBy == request.auth.uid &&
+        request.resource.data.ownerId == request.auth.uid &&
+        request.resource.data.videoId is string &&
+        request.resource.data.videoTitle is string &&
+        request.resource.data.subject is string &&
+        request.resource.data.adminIds is list &&
+        request.resource.data.participantIds is list &&
+        request.resource.data.participants is list &&
+        request.auth.uid in request.resource.data.adminIds &&
+        request.auth.uid in request.resource.data.participantIds;
+
+      allow update: if isSignedIn() && (
+        (
+          (resource.data.ownerId == request.auth.uid || (resource.data.adminIds is list && request.auth.uid in resource.data.adminIds)) &&
+          request.resource.data.createdBy == resource.data.createdBy &&
+          request.resource.data.ownerId == resource.data.ownerId &&
+          request.resource.data.videoId == resource.data.videoId
+        ) || (
+          request.resource.data.createdBy == resource.data.createdBy &&
+          request.resource.data.ownerId == resource.data.ownerId &&
+          request.resource.data.videoId == resource.data.videoId &&
+          request.resource.data.videoTitle == resource.data.videoTitle &&
+          request.resource.data.videoChannel == resource.data.videoChannel &&
+          request.resource.data.videoDescription == resource.data.videoDescription &&
+          request.resource.data.subject == resource.data.subject &&
+          request.resource.data.adminIds == resource.data.adminIds &&
+          request.resource.data.videoState == resource.data.videoState &&
+          request.resource.data.participants is list &&
+          request.resource.data.participantIds is list &&
+          request.resource.data.participants.size() == resource.data.participants.size() + 1 &&
+          request.resource.data.participantIds.size() == resource.data.participantIds.size() + 1 &&
+          request.resource.data.activeCount == resource.data.activeCount + 1 &&
+          request.resource.data.participants[request.resource.data.participants.size() - 1].uid == request.auth.uid &&
+          request.resource.data.participantIds[request.resource.data.participantIds.size() - 1] == request.auth.uid
+        )
+      );
+
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      match /messages/{messageId} {
+        allow get, list: if isSignedIn() &&
+          exists(roomRef(roomId)) &&
+          roomDoc(roomId).data.participantIds is list &&
+          request.auth.uid in roomDoc(roomId).data.participantIds;
+
+        allow create: if isSignedIn() &&
+          exists(roomRef(roomId)) &&
+          roomDoc(roomId).data.participantIds is list &&
+          request.auth.uid in roomDoc(roomId).data.participantIds &&
+          request.resource.data.senderId == request.auth.uid &&
+          request.resource.data.text is string &&
+          request.resource.data.timestamp is timestamp;
+
+        allow update: if isSignedIn() && resource.data.senderId == request.auth.uid;
+
+        allow delete: if isSignedIn() && (
+          resource.data.senderId == request.auth.uid ||
+          (exists(roomRef(roomId)) && roomDoc(roomId).data.adminIds is list && request.auth.uid in roomDoc(roomId).data.adminIds)
+        );
+      }
+    }
+
+    match /users/{userId} {
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if isSignedIn() && request.auth.uid == userId;
+
+      match /progress/{subjectId} {
+        allow get, list: if isSignedIn() && request.auth.uid == userId;
+        allow create, update, delete: if isSignedIn() && request.auth.uid == userId;
+      }
+    }
+
+    match /questions/{questionId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if isTeacherUser();
+    }
+
+    match /teacher_emails/{emailId} {
+      allow get: if isSignedIn();
+      allow list, create, update, delete: if isSuperAdmin();
+    }
+
+    match /conversations/{conversationId} {
+      allow get, list: if isSignedIn() && resource.data.participants is list && request.auth.uid in resource.data.participants;
+      allow create: if isSignedIn() && request.resource.data.participants is list && request.auth.uid in request.resource.data.participants;
+      allow update: if isSignedIn() && resource.data.participants is list && request.auth.uid in resource.data.participants;
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+
+      match /messages/{messageId} {
+        allow get, list: if isSignedIn() && exists(/databases/$(database)/documents/conversations/$(conversationId)) &&
+          get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants is list &&
+          request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
+
+        allow create: if isSignedIn() &&
+          exists(/databases/$(database)/documents/conversations/$(conversationId)) &&
+          request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants &&
+          request.resource.data.senderId == request.auth.uid &&
+          request.resource.data.text is string &&
+          request.resource.data.timestamp is timestamp;
+
+        allow update: if isSignedIn() && resource.data.senderId == request.auth.uid;
+        allow delete: if isSignedIn() && resource.data.senderId == request.auth.uid;
+      }
+    }
+
+    match /follow_requests/{requestId} {
+      allow get, list: if isSignedIn() && (resource.data.fromUid == request.auth.uid || resource.data.toUid == request.auth.uid);
+
+      allow create: if isSignedIn() &&
+        request.resource.data.fromUid == request.auth.uid &&
+        request.resource.data.toUid is string &&
+        request.resource.data.toUid != request.auth.uid &&
+        request.resource.data.status == 'pending';
+
+      allow update: if isSignedIn() && (
+        (resource.data.toUid == request.auth.uid &&
+          request.resource.data.fromUid == resource.data.fromUid &&
+          request.resource.data.toUid == resource.data.toUid &&
+          request.resource.data.status in ['accepted', 'rejected']) ||
+        (resource.data.fromUid == request.auth.uid && request.resource.data.status == 'cancelled')
+      );
+
+      allow delete: if isSignedIn() && (resource.data.fromUid == request.auth.uid || resource.data.toUid == request.auth.uid);
+    }
+
+    match /notifications/{notificationId} {
+      allow get, list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() &&
+        request.resource.data.senderId == request.auth.uid &&
+        request.resource.data.userId is string &&
+        request.resource.data.userId != request.auth.uid &&
+        request.resource.data.type is string &&
+        request.resource.data.message is string;
+      allow update: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    match /admin-teachers/{teacherId} {
+      allow get, list: if isSignedIn();
+      allow create: if false;
+      allow update: if isSignedIn() && request.auth.uid == teacherId;
+      allow delete: if false;
+    }
+
+    match /public-data/{document=**} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+
+    match /leaderboard/{entryId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

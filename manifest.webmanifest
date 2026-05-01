@@ -1,0 +1,20 @@
+{
+  "name": "TawjihiGuide",
+  "short_name": "TawjihiGuide",
+  "description": "منصة التوجيهي المتكاملة للدراسة والاختبارات والذكاء الاصطناعي",
+  "start_url": "/dashboard.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8f9ff",
+  "theme_color": "#00346f",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

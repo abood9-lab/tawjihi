@@ -1,0 +1,492 @@
+
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+    <title>TawjihiGuide - المواد الدراسية</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Noto Sans Arabic', sans-serif; background-color: #f8f9ff; -webkit-tap-highlight-color: transparent; }
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        .active-scale:active { transform: scale(0.95); transition: 0.1s; }
+        .course-card:hover { transform: translateY(-8px); transition: all 0.3s ease; }
+        .course-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .hero-panel { background: linear-gradient(135deg, #00346f 0%, #2c694e 100%); }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 9999px;
+            background: #94a3b8;
+            animation: typing-bounce 1s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes typing-bounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+            40% { transform: translateY(-6px); opacity: 1; }
+        }
+        @keyframes floaty {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+    </style>
+</head>
+<body class="bg-background text-slate-900 pb-24 lg:pb-0">
+
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 glass-header border-b border-slate-200">
+    <span class="text-xl font-black text-primary">TawjihiGuide</span>
+    <div class="w-10 h-10 rounded-full border-2 border-primary/10 overflow-hidden">
+        <img id="navAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full object-cover"/>
+    </div>
+</header>
+
+<aside class="hidden lg:flex flex-col fixed right-0 top-16 h-[calc(100vh-64px)] w-64 p-4 bg-white border-l border-slate-200 z-40">
+    <nav class="flex-1 space-y-2 mt-4 text-right">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">dashboard</span> لوحة التحكم
+        </a>
+        <a href="courses.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-primary font-bold rounded-xl shadow-sm">
+            <span class="material-symbols-outlined">menu_book</span> المواد الدراسية
+        </a>
+        <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">person</span> الملف الشخصي
+        </a>
+    </nav>
+</aside>
+
+<main class="lg:mr-64 pt-24 px-4 md:px-12 pb-12 text-right">
+    <div class="max-w-6xl mx-auto">
+        
+        <div class="mb-10 space-y-6">
+            <div>
+                <h1 class="text-3xl font-black text-slate-800">المواد الدراسية</h1>
+                <p class="text-slate-500 font-medium">اختر المادة التي ترغب في دراستها اليوم ثم ادخل إلى تفاصيلها</p>
+            </div>
+            
+            <div class="hero-panel rounded-[2rem] p-6 md:p-8 text-white shadow-2xl overflow-hidden relative">
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div class="md:col-span-2">
+                        <h2 class="text-2xl md:text-3xl font-black mb-2">منصة دراسة متكاملة</h2>
+                        <p class="text-white/80 font-medium leading-relaxed">اختر المادة، ثم ادخل إلى صفحة فيها مؤقت مذاكرة، نصائح سريعة، وبحث فيديوهات يوتيوب مباشر داخل الموقع.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 text-right">
+                        <p class="text-xs uppercase tracking-[0.3em] text-white/70 mb-2">المواد المتاحة</p>
+                        <p class="text-3xl font-black">4</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-2 gap-6">
+            
+            <div class="course-card bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-3xl">history_edu</span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-800 mb-2">تاريخ</h3>
+                    <p class="text-slate-500 text-sm font-medium mb-6 leading-relaxed">تاريخ الأردن مع تنظيم الدروس والوحدات والنصائح اليومية.</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-primary">ابدأ الآن</span>
+                        <span class="text-slate-400">4 وحدات</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full w-[70%] rounded-full"></div>
+                    </div>
+                    <a href="course-detail.html?subject=history" class="block text-center py-3.5 bg-slate-50 text-primary font-black rounded-xl hover:bg-primary hover:text-white transition-all active-scale">ادخل للمادة</a>
+                </div>
+            </div>
+
+            <div class="course-card bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-3xl">mosque</span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-800 mb-2">دين</h3>
+                    <p class="text-slate-500 text-sm font-medium mb-6 leading-relaxed">التفسير والفقه والحديث مع ملخصات سريعة وفيديوهات شرح.</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-green-600">محتوى متجدد</span>
+                        <span class="text-slate-400">3 محاور</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="bg-green-500 h-full w-[60%] rounded-full"></div>
+                    </div>
+                    <a href="course-detail.html?subject=religion" class="block text-center py-3.5 bg-slate-50 text-primary font-black rounded-xl hover:bg-primary hover:text-white transition-all active-scale">ادخل للمادة</a>
+                </div>
+            </div>
+
+            <div class="course-card bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-3xl">menu_book</span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-800 mb-2">عربي</h3>
+                    <p class="text-slate-500 text-sm font-medium mb-6 leading-relaxed">القواعد، النصوص، والمهارات اللغوية مع ملخصات وفيديوهات تعليمية.</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-purple-600">دروس مركزة</span>
+                        <span class="text-slate-400">6 محاور</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="bg-purple-500 h-full w-[50%] rounded-full"></div>
+                    </div>
+                    <a href="course-detail.html?subject=arabic" class="block text-center py-3.5 bg-slate-50 text-primary font-black rounded-xl hover:bg-primary hover:text-white transition-all active-scale">ادخل للمادة</a>
+                </div>
+            </div>
+
+            <div class="course-card bg-white rounded-[2.5rem] p-6 shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div>
+                    <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-3xl">translate</span>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-800 mb-2">إنجليزي</h3>
+                    <p class="text-slate-500 text-sm font-medium mb-6 leading-relaxed">Grammar, vocabulary, and exam preparation with videos and timed practice.</p>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-amber-600">مناسب لجميع المستويات</span>
+                        <span class="text-slate-400">8 وحدات</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                        <div class="bg-amber-500 h-full w-[65%] rounded-full"></div>
+                    </div>
+                    <a href="course-detail.html?subject=english" class="block text-center py-3.5 bg-slate-50 text-primary font-black rounded-xl hover:bg-primary hover:text-white transition-all active-scale">ادخل للمادة</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<button id="openAIChatBtn" aria-label="فتح المساعد الذكي" title="المساعد الذكي" class="group fixed bottom-24 right-4 md:bottom-8 md:right-8 z-[80] flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-white shadow-2xl border-4 border-white/80 transition-transform hover:scale-105 active-scale" style="animation: floaty 3.2s ease-in-out infinite;">
+    <span class="absolute inset-0 rounded-full bg-cyan-400/25 animate-ping"></span>
+    <span class="absolute inset-1 rounded-full border border-white/20"></span>
+    <span class="material-symbols-outlined relative z-10 text-3xl">smart_toy</span>
+</button>
+
+<div id="aiChatModal" class="fixed inset-0 bg-black/40 hidden flex items-end md:items-center justify-center z-[100] p-0 md:p-4 transition-opacity duration-300">
+    <div class="bg-white w-full h-[100dvh] md:w-[90%] max-w-2xl md:h-[75vh] flex flex-col shadow-2xl animate-slide-up md:animate-none rounded-none md:rounded-3xl overflow-hidden">
+        <div class="flex items-center justify-between p-4 md:p-6 border-b border-slate-200">
+            <div class="flex items-center gap-3 flex-1">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white text-xl">smart_toy</span>
+                </div>
+                <div class="text-right flex-1">
+                    <h3 class="font-black text-slate-900">مساعد ذكي بالذكاء الاصطناعي</h3>
+                    <p class="text-xs text-slate-500">مدعوم بتقنية GROQ المتقدمة</p>
+                </div>
+            </div>
+            <button id="closeAIChatBtn" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 transition-colors">
+                <span class="material-symbols-outlined text-slate-500">close</span>
+            </button>
+        </div>
+
+        <div id="chatMessagesArea" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 bg-slate-50">
+            <div class="flex items-end gap-2 justify-end text-right">
+                <div class="max-w-[82%] md:max-w-sm bg-primary text-white rounded-2xl rounded-br-none p-4 text-sm leading-relaxed shadow-sm">
+                    👋 مرحباً! أنا مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟
+                </div>
+                <div class="w-8 h-8 bg-primary rounded-full flex-shrink-0 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white text-base">smart_toy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-slate-200 p-4 md:p-6 bg-white rounded-b-[2rem] md:rounded-b-3xl flex gap-3">
+            <input id="chatInputField" type="text" placeholder="اسأل أي سؤال..." class="flex-1 bg-slate-100 border-0 rounded-full px-4 py-3 text-right text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all" />
+            <button id="sendChatBtn" class="active-scale flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full hover:shadow-lg transition-all text-white flex-shrink-0">
+                <span class="material-symbols-outlined">send</span>
+            </button>
+        </div>
+
+        <div id="typingIndicator" class="hidden absolute inset-x-0 bottom-[88px] px-4 md:px-6 z-50 pointer-events-none">
+            <div class="flex items-end gap-2 justify-end text-right">
+                <div class="max-w-[82%] md:max-w-sm bg-white border border-slate-200 rounded-2xl rounded-br-none p-3 shadow-sm">
+                    <div class="flex items-center gap-2 justify-end">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+                <div class="w-8 h-8 bg-slate-200 rounded-full flex-shrink-0 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-500 text-base">smart_toy</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes slide-up {
+        from { opacity: 0; transform: translateY(100%); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-slide-up { animation: slide-up 0.3s ease-out; }
+    #aiChatModal.hidden { pointer-events: none; }
+    #aiChatModal:not(.hidden) { pointer-events: auto; }
+</style>
+
+<nav class="lg:hidden fixed bottom-0 w-full glass-header border-t border-slate-200 z-[70] safe-bottom h-16 flex justify-around items-center">
+    <a href="dashboard.html" class="flex flex-1 items-center justify-center py-3 text-slate-400">
+        <span class="material-symbols-outlined text-[26px] leading-none">dashboard</span>
+    </a>
+    <a href="courses.html" class="flex flex-1 items-center justify-center py-3 text-primary">
+        <span class="material-symbols-outlined text-[26px] leading-none" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+    </a>
+    <a href="profile.html" class="flex flex-1 items-center justify-center py-3 text-slate-400">
+        <span class="material-symbols-outlined text-[26px] leading-none">person</span>
+    </a>
+</nav>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { CONFIG } from "./config.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+        authDomain: "tawj-d1f01.firebaseapp.com",
+        projectId: "tawj-d1f01",
+        storageBucket: "tawj-d1f01.firebasestorage.app",
+        messagingSenderId: "124295262421",
+        appId: "1:124295262421:web:87cd51227a13e0a710725c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const aiChatModal = document.getElementById('aiChatModal');
+    const openAIChatBtn = document.getElementById('openAIChatBtn');
+    const closeAIChatBtn = document.getElementById('closeAIChatBtn');
+    const chatInputField = document.getElementById('chatInputField');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const chatMessagesArea = document.getElementById('chatMessagesArea');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const GROQ_API_URL = CONFIG.GROQ.API_URL;
+
+    let chatHistory = [];
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // جلب الصورة الشخصية لـ Header
+            if(user.photoURL) document.getElementById('navAvatar').src = user.photoURL;
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if (snap.exists() && snap.data().photoURL) {
+                document.getElementById('navAvatar').src = snap.data().photoURL;
+            }
+        } else {
+            window.location.href = 'signup.html';
+        }
+    });
+
+    openAIChatBtn.addEventListener('click', () => {
+        aiChatModal.classList.remove('hidden');
+        chatInputField.focus();
+    });
+
+    closeAIChatBtn.addEventListener('click', closeChat);
+    aiChatModal.addEventListener('click', (event) => {
+        if (event.target === aiChatModal) closeChat();
+    });
+
+    function closeChat() {
+        aiChatModal.classList.add('hidden');
+        chatHistory = [];
+        setChatLocked(false);
+        hideTypingIndicator();
+        chatMessagesArea.innerHTML = `
+            <div class="flex items-end gap-2 justify-end text-right">
+                <div class="max-w-[82%] md:max-w-sm bg-primary text-white rounded-2xl rounded-br-none p-4 text-sm leading-relaxed shadow-sm">
+                    👋 مرحباً! أنا مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟
+                </div>
+                <div class="w-8 h-8 bg-primary rounded-full flex-shrink-0 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-white text-base">smart_toy</span>
+                </div>
+            </div>
+        `;
+    }
+
+    sendChatBtn.addEventListener('click', sendMessage);
+    chatInputField.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    async function sendMessage() {
+        const userMessage = chatInputField.value.trim();
+        if (!userMessage) return;
+
+        addMessageToUI(userMessage, 'user');
+        chatInputField.value = '';
+        setChatLocked(true);
+        chatHistory.push({ role: 'user', content: userMessage });
+        showTypingIndicator();
+
+        try {
+            const response = await fetch('http://localhost:3001/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: chatHistory.map(msg => ({
+                        role: msg.role === 'user' ? 'user' : 'assistant',
+                        content: msg.content
+                    }))
+                })
+            });
+
+            if (!response.ok) {
+                await handleLocalAIResponse(userMessage);
+                return;
+            }
+
+            const data = await response.json();
+            if (!data.success || !data.message) throw new Error('Invalid response format');
+
+            hideTypingIndicator();
+            addMessageToUI(data.message, 'ai');
+            chatHistory.push({ role: 'assistant', content: data.message });
+            setChatLocked(false);
+            chatInputField.focus();
+        } catch (error) {
+            console.error('Chat Error:', error);
+            await handleLocalAIResponse(userMessage);
+        }
+    }
+
+    async function handleLocalAIResponse(userMessage) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        const keywords = {
+            'درس|تعلم|دراسة': 'أنصحك ببدء الدرس الأول في المادة المختارة. جرب أداة المؤقت (Pomodoro) لمدة 25 دقيقة من التركيز المكثف.',
+            'اختبار|امتحان|سؤال': 'يمكنك الذهاب إلى قسم "بنك الأسئلة" لحل الاختبارات. كل سؤال يصحح فورياً ويعطيك نقاطاً وشارات.',
+            'نقاط|درجات|تقدم': 'تحقق من لوحة المتصدرين لرؤية ترتيبك. حاول الحصول على أفضل دقة لكسب نقاط إضافية!',
+            'شارات|إنجازات': 'يمكنك كسب شارات مثل 🏆 منجز و 👑 ماهر من خلال حل الاختبارات بدقة عالية.',
+            'مادة|مواد|عربي|انجليزي|تاريخ|دين': 'اذهب إلى المواد الدراسية لاستكشاف 4 مواد: اللغة العربية والإنجليزية وتاريخ الأردن والتربية الإسلامية.',
+            'مساعدة|كيف': 'أنا هنا لمساعدتك! يمكنك سؤالي عن أي موضوع يتعلق بالدراسة أو استخدام التطبيق.',
+            'شكرا|تشكر': 'بكل سرور! 😊 أتمنى لك دراسة موفقة. استمر في الاجتهاد!',
+            'مرحبا|السلام': 'وعليكم السلام ورحمة الله وبركاته! 👋 كيف يمكنني مساعدتك اليوم؟'
+        };
+
+        let response = 'شكراً على السؤال! 😊 ';
+        let found = false;
+        for (const [keys, reply] of Object.entries(keywords)) {
+            if (keys.split('|').some(key => userMessage.includes(key))) {
+                response += reply;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            response += 'هذا موضوع مثير للاهتمام! يمكنك محاولة البحث عن معلومات عنه في المواد الدراسية المتوفرة. إذا كنت تحتاج مساعدة في الدراسة، تفضل بسؤالي عن أي مادة من المواد الأساسية! 📚';
+        }
+
+        hideTypingIndicator();
+        addMessageToUI(response, 'ai');
+        chatHistory.push({ role: 'assistant', content: response });
+        setChatLocked(false);
+        chatInputField.focus();
+    }
+
+    function addMessageToUI(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex items-end gap-2 ${sender === 'user' ? 'flex-row-reverse justify-end text-right' : 'flex-row justify-start text-left'}`;
+
+        if (sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="max-w-[82%] md:max-w-sm bg-primary text-white rounded-2xl rounded-br-none p-4 text-sm leading-relaxed break-words shadow-sm">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="w-8 h-8 bg-slate-200 rounded-full flex-shrink-0 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-base text-slate-600">smart_toy</span>
+                </div>
+                <div class="max-w-[82%] md:max-w-sm bg-white text-slate-900 border border-slate-200 rounded-2xl rounded-bl-none p-4 text-sm leading-relaxed break-words shadow-sm">
+                    ${text.split('\n').map(line => `<p>${escapeHtml(line)}</p>`).join('')}
+                </div>
+            `;
+        }
+
+        chatMessagesArea.appendChild(messageDiv);
+        chatMessagesArea.scrollTop = chatMessagesArea.scrollHeight;
+    }
+
+    function setChatLocked(isLocked) {
+        chatInputField.disabled = isLocked;
+        sendChatBtn.disabled = isLocked;
+        chatInputField.classList.toggle('opacity-60', isLocked);
+        sendChatBtn.classList.toggle('opacity-60', isLocked);
+        sendChatBtn.classList.toggle('cursor-not-allowed', isLocked);
+        chatInputField.classList.toggle('cursor-not-allowed', isLocked);
+    }
+
+    function showTypingIndicator() {
+        typingIndicator.classList.remove('hidden');
+        chatMessagesArea.scrollTop = chatMessagesArea.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+        typingIndicator.classList.add('hidden');
+    }
+
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+</script>
+<script src="site-shell.js" defer></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

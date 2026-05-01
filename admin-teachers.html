@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>????? ???????? | TawjihiGuide</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans Arabic', sans-serif;
+      background-color: #f8f9ff;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glass-header {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body class="bg-background text-slate-900 min-h-screen pb-24 lg:pb-0">
+  <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 glass-header border-b border-slate-200">
+    <span class="text-xl font-black text-primary">TawjihiGuide</span>
+    <a href="teacher.html" class="text-sm font-bold text-primary hover:underline">ا�ع��دة �صفحة ا��&ع��&</a>
+  </header>
+
+  <aside class="hidden lg:flex flex-col fixed right-0 top-16 h-[calc(100vh-64px)] w-64 p-4 bg-white border-l border-slate-200 z-40">
+    <nav class="flex-1 space-y-2 mt-4 text-right">
+      <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">dashboard</span> ���حة ا�تح�'�&
+      </a>
+      <a href="courses.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">menu_book</span> ا��&��اد ا�دراس�`ة
+      </a>
+      <a href="quiz.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">quiz</span> ب� �' ا�أسئ�ة
+      </a>
+      <a href="messages.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">mail</span> ا��&راس�ات
+      </a>
+      <a href="search-users.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">people</span> ا�بحث ع�  ا�ط�اب
+      </a>
+      <a href="notifications.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">notifications</span> ا�إشعارات
+      </a>
+      <a href="leaderboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">leaderboard</span> ا��&تصدر��� 
+      </a>
+      <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+        <span class="material-symbols-outlined">person</span> ا��&�ف ا�شخص�`
+      </a>
+    </nav>
+  </aside>
+
+  <main class="pt-24 lg:mr-64 px-4 md:px-8 pb-10">
+    <div class="max-w-4xl mx-auto space-y-6">
+      <div>
+        <h1 class="text-3xl font-black text-slate-800">إدارة ص�اح�`ات ا��&ع��&�`� </h1>
+        <p class="text-slate-500 font-medium mt-1">أضف ا�إ�`�&�`�ات ا��&س�&��ح ��!ا بإضافة ا�أسئ�ة ف�` صفحة ا��&ع��&.</p>
+      </div>
+
+      <div id="statusBox" class="hidden rounded-xl border px-4 py-3 text-sm font-bold"></div>
+
+      <section id="adminPanel" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-5 hidden">
+        <form id="addTeacherForm" class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
+          <input id="teacherEmailInput" type="email" required placeholder="teacher@example.com" class="w-full rounded-2xl border-slate-200 focus:ring-primary" />
+          <button type="submit" class="px-6 py-3 bg-primary text-white font-black rounded-2xl">إضافة �'�&ع��&</button>
+        </form>
+
+        <div class="border-t border-slate-100 pt-4">
+          <h2 class="text-lg font-black mb-3">ا��ائ�&ة ا�حا��`ة</h2>
+          <div id="teachersList" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <section id="blockedPanel" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm hidden">
+        <div class="flex items-start gap-3 text-red-700 bg-red-50 border border-red-200 rounded-xl p-4">
+          <span class="material-symbols-outlined">gpp_bad</span>
+          <div>
+            <p class="font-black">غ�`ر �&صرح ��' با�دخ���</p>
+            <p class="text-sm">�!ذ�! ا�صفحة �&تاحة ف�ط ���&شرف�`�  (Admin).</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <nav class="lg:hidden fixed bottom-0 w-full glass-header border-t border-slate-200 z-[70] safe-bottom h-16 flex justify-around items-center">
+    <a href="dashboard.html" class="flex flex-col items-center gap-1 text-slate-400">
+      <span class="material-symbols-outlined">dashboard</span>
+      <span class="text-[10px] font-bold">ا�رئ�`س�`ة</span>
+    </a>
+    <a href="teacher.html" class="flex flex-col items-center gap-1 text-primary">
+      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+      <span class="text-[10px] font-black">ا��&ع��&</span>
+    </a>
+    <a href="admin-teachers.html" class="flex flex-col items-center gap-1 text-slate-400">
+      <span class="material-symbols-outlined">admin_panel_settings</span>
+      <span class="text-[10px] font-bold">ا�ص�اح�`ات</span>
+    </a>
+  </nav>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, getDocs, query, orderBy, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+      authDomain: "tawj-d1f01.firebaseapp.com",
+      projectId: "tawj-d1f01",
+      storageBucket: "tawj-d1f01.firebasestorage.app",
+      messagingSenderId: "124295262421",
+      appId: "1:124295262421:web:87cd51227a13e0a710725c"
+    };
+
+    // ضع �!� ا إ�`�&�`�ات ا�أد�&�  ا��&س�&��ح ��!�& بإدارة ص�اح�`ات ا��&ع��&�`� 
+    const SUPER_ADMIN_EMAILS = [
+      "shahedalmefleh850@gmail.com"
+    ];
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const statusBox = document.getElementById("statusBox");
+    const adminPanel = document.getElementById("adminPanel");
+    const blockedPanel = document.getElementById("blockedPanel");
+    const addTeacherForm = document.getElementById("addTeacherForm");
+    const teacherEmailInput = document.getElementById("teacherEmailInput");
+    const teachersList = document.getElementById("teachersList");
+
+    let currentUser = null;
+
+    function normalizeEmail(email) {
+      return email.trim().toLowerCase();
+    }
+
+    function showStatus(message, type = "info") {
+      statusBox.textContent = message;
+      statusBox.classList.remove("hidden", "border-red-200", "bg-red-50", "text-red-700", "border-green-200", "bg-green-50", "text-green-700", "border-blue-200", "bg-blue-50", "text-blue-700");
+      if (type === "error") {
+        statusBox.classList.add("border-red-200", "bg-red-50", "text-red-700");
+      } else if (type === "success") {
+        statusBox.classList.add("border-green-200", "bg-green-50", "text-green-700");
+      } else {
+        statusBox.classList.add("border-blue-200", "bg-blue-50", "text-blue-700");
+      }
+    }
+
+    function setAuthorizedUI(isAuthorized) {
+      adminPanel.classList.toggle("hidden", !isAuthorized);
+      blockedPanel.classList.toggle("hidden", isAuthorized);
+    }
+
+    async function loadTeacherEmails() {
+      teachersList.innerHTML = "<div class='text-sm text-slate-400'>جار�` ا�تح�&�`�...</div>";
+      const q = query(collection(db, "teacher_emails"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        teachersList.innerHTML = "<div class='text-sm text-slate-400'>�ا �`��جد إ�`�&�`�ات �&ع��&�`�  بعد.</div>";
+        return;
+      }
+
+      teachersList.innerHTML = "";
+      snap.forEach((docSnap) => {
+        const data = docSnap.data();
+        const email = data.email || docSnap.id;
+
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3";
+        row.innerHTML = `
+          <div>
+            <p class="font-black text-sm text-slate-700">${email}</p>
+            <p class="text-xs text-slate-500">id: ${docSnap.id}</p>
+          </div>
+          <button class="delete-btn px-3 py-2 bg-red-600 text-white text-xs font-bold rounded-lg" data-id="${docSnap.id}">حذف</button>
+        `;
+        teachersList.appendChild(row);
+      });
+
+      document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          try {
+            await deleteDoc(doc(db, "teacher_emails", id));
+            showStatus("ت�& حذف ا�إ�`�&�`� �&�  �ائ�&ة ا��&ع��&�`� .", "success");
+            await loadTeacherEmails();
+          } catch (error) {
+            showStatus(error?.message || "فش� ا�حذف.", "error");
+          }
+        });
+      });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "signup.html";
+        return;
+      }
+
+      currentUser = user;
+      const email = normalizeEmail(user.email || "");
+      const isSuperAdmin = SUPER_ADMIN_EMAILS.includes(email);
+
+      if (!isSuperAdmin) {
+        setAuthorizedUI(false);
+        showStatus("غ�`ر �&صرح: حساب�' ��`س ض�&�  �ائ�&ة ا��&شرف�`� .", "error");
+        return;
+      }
+
+      setAuthorizedUI(true);
+      showStatus("�&رحبا�9 أد�&� �R �`�&�'� �' ا�آ�  إدارة ص�اح�`ات ا��&ع��&�`� .", "success");
+      await loadTeacherEmails();
+    });
+
+    addTeacherForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const email = normalizeEmail(teacherEmailInput.value);
+
+      if (!email) {
+        showStatus("أدخ� بر�`د إ��'تر��� �` صح�`ح.", "error");
+        return;
+      }
+
+      try {
+        await setDoc(doc(db, "teacher_emails", email), {
+          email,
+          addedByUid: currentUser.uid,
+          addedByEmail: currentUser.email || null,
+          createdAt: serverTimestamp()
+        }, { merge: true });
+
+        teacherEmailInput.value = "";
+        showStatus("ت�&ت إضافة ا�إ�`�&�`� ��ائ�&ة ا��&ع��&�`� .", "success");
+        await loadTeacherEmails();
+      } catch (error) {
+        showStatus(error?.message || "فش�ت إضافة ا�إ�`�&�`�.", "error");
+      }
+    });
+  </script>
+  <script src="site-shell.js" defer></script>
+</body>
+</html>
+
+
+
+

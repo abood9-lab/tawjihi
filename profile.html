@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+    <title>TawjihiGuide - الملف الشخصي</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap" rel="stylesheet"/>
+    <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { "primary": "#00346f", "background": "#f8f9ff" } } }
+        }
+    </script>
+    <style>
+        body { 
+            font-family: 'Noto Sans Arabic', sans-serif; 
+            background-color: #f8f9ff; 
+            -webkit-tap-highlight-color: transparent; 
+            overscroll-behavior-y: contain;
+        }
+        .glass-header { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .safe-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem); }
+        .active-scale:active { transform: scale(0.96); transition: 0.1s; }
+                
+        #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 90%; max-width: 400px; }
+        .toast { background: #1e293b; color: white; padding: 14px 20px; border-radius: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); justify-content: center; }
+        
+        .custom-input { @apply w-full px-4 py-4 rounded-2xl bg-slate-100/50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-right text-sm; }
+        
+        /* Mobile Specific Tweaks */
+        @media (max-width: 768px) {
+            .main-card { border-radius: 2rem !important; padding: 1.5rem !important; }
+            h1 { font-size: 1.5rem !important; }
+        }
+
+        .switch { position: relative; display: inline-block; width: 48px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e2e8f0; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #00346f; }
+        input:checked + .slider:before { transform: translateX(22px); }
+    </style>
+</head>
+<body class="bg-background text-slate-900 pb-28 lg:pb-0">
+
+<div id="toast-container"></div>
+
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-5 h-14 glass-header border-b border-slate-200/60">
+    <span class="text-lg font-black text-primary tracking-tight">TawjihiGuide</span>
+    <button id="logoutBtn" class="text-xs font-bold text-red-600 bg-red-50 px-3 py-1.5 rounded-lg active-scale">خروج</button>
+</header>
+
+<aside class="hidden lg:flex flex-col fixed right-0 top-16 h-[calc(100vh-64px)] w-64 p-4 bg-white border-l border-slate-200 z-40">
+    <nav class="flex-1 space-y-2 mt-4 text-right">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">dashboard</span> لوحة التحكم
+        </a>
+        <a href="profile.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-primary font-bold rounded-xl shadow-sm">
+            <span class="material-symbols-outlined">person</span> الملف الشخصي
+        </a>
+        <a href="quiz.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl">
+            <span class="material-symbols-outlined">bolt</span> وضع التركيز
+        </a>
+    </nav>
+</aside>
+
+<main class="lg:mr-64 pt-20 px-4 md:px-12">
+    <div class="max-w-2xl mx-auto text-right">
+        <header class="mb-6 px-1">
+            <h1 class="text-2xl font-black text-slate-800">إعدادات الحساب</h1>
+            <p class="text-sm text-slate-500 font-medium">أدر بياناتك الشخصية وصورتك</p>
+        </header>
+
+        <div class="main-card bg-white border border-slate-200 rounded-[2.5rem] p-6 md:p-12 shadow-sm">
+            <div class="flex flex-col items-center mb-8">
+                <div class="relative group">
+                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-slate-50 relative ring-1 ring-slate-100">
+                        <img id="profileImage" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full object-cover"/>
+                        <div id="imageLoader" class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 transition-opacity">
+                            <div class="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    </div>
+                    <button id="upload_widget" class="absolute bottom-0 left-0 bg-primary text-white w-10 h-10 rounded-full shadow-lg border-2 border-white flex items-center justify-center active-scale">
+                        <span class="material-symbols-outlined text-lg">photo_camera</span>
+                    </button>
+                </div>
+                <h2 id="displayFullname" class="text-xl font-black mt-4 text-slate-800">جاري التحميل...</h2>
+                <p id="displayEmail" class="text-xs text-slate-400 font-medium"></p>
+            </div>
+
+            <form id="profileForm" class="space-y-5">
+                <div class="grid grid-cols-1 gap-5">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-black text-slate-500 mr-1">الاسم الكامل</label>
+                        <input id="inputName" class="w-full px-4 py-4 rounded-2xl bg-slate-100/50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-right text-sm" type="text" placeholder="اسمك الكامل" required/>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-black text-slate-500 mr-1">رقم الهاتف</label>
+                        <input id="inputPhone" class="w-full px-4 py-4 rounded-2xl bg-slate-100/50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-left text-sm" dir="ltr" type="tel" placeholder="07XXXXXXXX"/>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-black text-slate-500 mr-1">المدرسة</label>
+                        <input id="inputSchool" class="w-full px-4 py-4 rounded-2xl bg-slate-100/50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-right text-sm" type="text" placeholder="اسم مدرستك"/>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-black text-slate-500 mr-1">السنة الدراسية</label>
+                        <select id="inputYear" class="w-full px-4 py-4 rounded-2xl bg-slate-100/50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-right text-sm">
+                            <option value="2025">توجيهي 2025</option>
+                            <option value="2026">توجيهي 2026</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50/50 rounded-[2rem] p-5 border border-blue-100/50 mt-2">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-blue-600 text-xl">link</span>
+                        <h3 class="font-black text-slate-800 text-sm">رابط WhiterChat</h3>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">أضف معرفك الشخصي ليتمكن زملائك من مراسلتك.</p>
+                    <div class="flex items-center gap-2 bg-white p-3 rounded-xl border border-blue-100">
+                        <span class="text-slate-400 text-xs font-bold" dir="ltr">@</span>
+                        <input id="inputWhiterChatId" class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-sm font-bold" type="text" placeholder="username" dir="ltr"/>
+                    </div>
+                </div>
+
+                <button type="submit" id="saveBtn" class="w-full py-4 bg-primary text-white font-black rounded-2xl shadow-md active-scale transition-all text-base tracking-wide">حفظ التغييرات</button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-100">
+                <h3 class="font-black text-slate-800 mb-4 text-sm px-1">الخصوصية</h3>
+                <div class="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <div class="ml-2">
+                        <p class="font-bold text-sm">حساب خاص</p>
+                        <p class="text-[11px] text-slate-500 leading-tight">طلب الموافقة قبل المراسلة</p>
+                    </div>
+                    <label class="switch">
+                        <input id="inputPrivate" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div id="followRequestsPanel" class="mt-4 hidden">
+                    <h4 class="font-black text-xs text-slate-400 mb-3 uppercase px-1">طلبات المتابعة</h4>
+                    <div id="followRequestsList" class="space-y-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<nav class="lg:hidden fixed bottom-0 w-full glass-header border-t border-slate-200/60 z-[70] safe-bottom h-16 flex justify-around items-center px-2">
+    <a href="dashboard.html" class="flex flex-col items-center gap-1 w-1/4 text-slate-400">
+        <span class="material-symbols-outlined text-[26px]">grid_view</span>
+        <span class="text-[10px] font-bold">الرئيسية</span>
+    </a>
+    <a href="courses.html" class="flex flex-col items-center gap-1 w-1/4 text-slate-400">
+        <span class="material-symbols-outlined text-[26px]">menu_book</span>
+        <span class="text-[10px] font-bold">المواد</span>
+    </a>
+    <a href="quiz.html" class="flex flex-col items-center gap-1 w-1/4 text-slate-400">
+        <span class="material-symbols-outlined text-[26px]">bolt</span>
+        <span class="text-[10px] font-bold">التركيز</span>
+    </a>
+    <a href="profile.html" class="flex flex-col items-center gap-1 w-1/4 text-primary">
+        <span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">person</span>
+        <span class="text-[10px] font-black">حسابي</span>
+    </a>
+</nav>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+        authDomain: "tawj-d1f01.firebaseapp.com",
+        projectId: "tawj-d1f01",
+        storageBucket: "tawj-d1f01.firebasestorage.app",
+        messagingSenderId: "124295262421",
+        appId: "1:124295262421:web:87cd51227a13e0a710725c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const CLOUD_NAME = "dwohk3sna";
+    const UPLOAD_PRESET = "TawjihiGuide"; 
+    let uid = null;
+
+    function showToast(msg) {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast font-bold';
+        t.innerHTML = `<span class="material-symbols-outlined text-green-400">check_circle</span>${msg}`;
+        c.appendChild(t);
+        setTimeout(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; }, 10);
+        setTimeout(() => { t.style.opacity = '0'; setTimeout(()=>t.remove(),300); }, 3000);
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            uid = user.uid;
+            document.getElementById('displayEmail').innerText = user.email;
+            const snap = await getDoc(doc(db, "users", uid));
+            if (snap.exists()) {
+                const d = snap.data();
+                document.getElementById('inputName').value = d.fullName || "";
+                document.getElementById('inputPhone').value = d.phone || "";
+                document.getElementById('inputSchool').value = d.school || "";
+                document.getElementById('inputYear').value = d.academicYear || "2025";
+                document.getElementById('displayFullname').innerText = d.fullName || "طالب توجيهي";
+                if(d.photoURL) document.getElementById('profileImage').src = d.photoURL;                            
+                document.getElementById('inputWhiterChatId').value = d.whiterChatId || "";
+                document.getElementById('inputPrivate').checked = !!d.isPrivate;
+
+                onSnapshot(doc(db, 'users', uid), (snap2) => {
+                    if (!snap2.exists()) return;
+                    const dd = snap2.data();
+                    const frPanel = document.getElementById('followRequestsPanel');
+                    if (Array.isArray(dd.followRequests) && dd.followRequests.length) {
+                        frPanel.classList.remove('hidden');
+                        renderFollowRequests(dd.followRequests);
+                    } else {
+                        frPanel.classList.add('hidden');
+                    }
+                });
+            }
+        } else { window.location.href = 'signup.html'; }
+    });
+
+    const widget = cloudinary.createUploadWidget({
+        cloudName: CLOUD_NAME, uploadPreset: UPLOAD_PRESET,
+        cropping: true, croppingAspectRatio: 1, multiple: false,
+        theme: "minimal", language: "ar"
+    }, async (err, res) => {
+        if (!err && res && res.event === "success") {
+            const url = res.info.secure_url;
+            document.getElementById('profileImage').src = url;
+            document.getElementById('imageLoader').classList.add('opacity-100');
+            await setDoc(doc(db, "users", uid), { photoURL: url }, { merge: true });
+            await updateProfile(auth.currentUser, { photoURL: url });
+            document.getElementById('imageLoader').classList.remove('opacity-100');
+            showToast("تم تحديث الصورة");
+        }
+    });
+
+    document.getElementById("upload_widget").onclick = () => widget.open();
+
+    document.getElementById('profileForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('saveBtn');
+        btn.innerText = "جاري الحفظ...";
+        btn.disabled = true;
+
+        const data = {
+            fullName: document.getElementById('inputName').value,
+            phone: document.getElementById('inputPhone').value,
+            school: document.getElementById('inputSchool').value,
+            academicYear: document.getElementById('inputYear').value,                        
+            whiterChatId: document.getElementById('inputWhiterChatId').value,
+            updatedAt: new Date(),
+            isPrivate: !!document.getElementById('inputPrivate').checked
+        };
+
+        try {
+            await setDoc(doc(db, "users", uid), data, { merge: true });
+            await updateProfile(auth.currentUser, { displayName: data.fullName });
+            document.getElementById('displayFullname').innerText = data.fullName;
+            showToast("تم الحفظ بنجاح");
+        } catch (e) { showToast("خطأ في الحفظ"); }
+        finally { btn.innerText = "حفظ التغييرات"; btn.disabled = false; }
+    };
+
+    function renderFollowRequests(requests = []) {
+        const list = document.getElementById('followRequestsList');
+        list.innerHTML = '';
+        requests.forEach((uidReq) => {
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between gap-3 rounded-2xl bg-slate-50 border border-slate-100 px-3 py-2';
+            row.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined text-sm">person</span>
+                    </div>
+                    <p class="font-bold text-[11px] text-slate-700">${uidReq.substring(0,10)}...</p>
+                </div>
+                <div class="flex gap-1.5">
+                    <button class="accept-btn px-3 py-1.5 bg-primary text-white rounded-lg text-[10px] font-black" data-uid="${uidReq}">قبول</button>
+                    <button class="decline-btn px-3 py-1.5 bg-slate-200 text-slate-700 rounded-lg text-[10px] font-black" data-uid="${uidReq}">رفض</button>
+                </div>
+            `;
+            list.appendChild(row);
+        });
+
+        list.querySelectorAll('.accept-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const requester = btn.getAttribute('data-uid');
+            await updateDoc(doc(db, 'users', uid), { followers: arrayUnion(requester), followRequests: arrayRemove(requester) });
+            await updateDoc(doc(db, 'users', requester), { following: arrayUnion(uid) });
+            showToast('تم القبول');
+        }));
+
+        list.querySelectorAll('.decline-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const requester = btn.getAttribute('data-uid');
+            await updateDoc(doc(db, 'users', uid), { followRequests: arrayRemove(requester) });
+            showToast('تم الرفض');
+        }));
+    }
+
+    document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => window.location.href = 'signup.html');
+</script>
+<script src="site-shell.js" defer></script>
+</body>
+</html>

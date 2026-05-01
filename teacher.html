@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Teacher Dashboard - TawjihiGuide</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Lexend', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .diff-active { border-color: #00346f !important; background-color: #d7e2ff !important; color: #00346f !important; font-weight: 700; border-width: 2px; }
+        .ans-active { background-color: #2c694e !important; color: white !important; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+    </style>
+</head>
+<body class="bg-background text-slate-900 min-h-screen pb-20 lg:pb-0">
+
+<header class="bg-white/80 backdrop-blur-md border-b border-slate-200 flex justify-between items-center w-full px-6 h-16 fixed top-0 z-[100]">
+    <div class="text-xl font-black tracking-tight text-primary">TawjihiGuide</div>
+    <div class="flex items-center space-x-3">
+        <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined">notifications</span></button>
+        <div class="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">TR</div>
+    </div>
+</header>
+
+<aside class="hidden lg:flex flex-col fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-white border-r border-slate-200 p-4 space-y-2">
+    <nav class="space-y-1">
+        <button onclick="showPage('dashboard')" class="nav-link w-full flex items-center space-x-3 p-3 rounded-xl transition-all hover:bg-slate-50 text-slate-600">
+            <span class="material-symbols-outlined">dashboard</span><span class="text-sm font-medium">Dashboard</span>
+        </button>
+        <button onclick="showPage('add-question')" class="nav-link active w-full flex items-center space-x-3 p-3 rounded-xl bg-blue-50 text-primary font-bold">
+            <span class="material-symbols-outlined">post_add</span><span class="text-sm">Add Question</span>
+        </button>
+        <button onclick="showPage('question-bank')" class="nav-link w-full flex items-center space-x-3 p-3 rounded-xl transition-all hover:bg-slate-50 text-slate-600">
+            <span class="material-symbols-outlined">database</span><span class="text-sm font-medium">Question Bank</span>
+        </button>
+        <a href="admin-teachers.html" class="w-full flex items-center space-x-3 p-3 rounded-xl transition-all hover:bg-slate-50 text-slate-600">
+            <span class="material-symbols-outlined">admin_panel_settings</span><span class="text-sm font-medium">Teachers Access</span>
+        </a>
+    </nav>
+</aside>
+
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-[100] bg-white border-t border-slate-200 flex justify-around items-center py-2 shadow-2xl">
+    <button onclick="showPage('dashboard')" class="flex flex-col items-center p-2 text-slate-400">
+        <span class="material-symbols-outlined">home</span><span class="text-[10px]">Home</span>
+    </button>
+    <button onclick="showPage('add-question')" class="flex flex-col items-center p-2 text-primary">
+        <span class="material-symbols-outlined">add_circle</span><span class="text-[10px] font-bold">Add</span>
+    </button>
+    <button onclick="showPage('question-bank')" class="flex flex-col items-center p-2 text-slate-400">
+        <span class="material-symbols-outlined">grid_view</span><span class="text-[10px]">Bank</span>
+    </button>
+</nav>
+
+<main class="pt-20 lg:pl-72 p-4 lg:p-8">
+    
+    <!-- Modal for Lesson Info -->
+    <div id="lessonModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-md w-full mx-4 shadow-2xl">
+            <h2 class="text-xl font-bold text-primary mb-6">معلومات الدرس</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">اسم الدرس</label>
+                    <input type="text" id="lessonName" class="w-full rounded-xl border border-slate-200 p-3" placeholder="مثال: درس الأحياء" required/>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">رقم الوحدة</label>
+                    <input type="number" id="unitNumber" class="w-full rounded-xl border border-slate-200 p-3" min="1" max="10" placeholder="1" required/>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">عدد الأسئلة</label>
+                    <input type="number" id="questionCount" class="w-full rounded-xl border border-slate-200 p-3" min="1" max="50" placeholder="10" required/>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeLessonModal()" class="flex-1 py-3 border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50">إلغاء</button>
+                <button onclick="confirmLessonInfo()" class="flex-1 py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary/90">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-question" class="page-section active max-w-5xl mx-auto">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-primary">Create Question</h1>
+            <p class="text-sm text-slate-500">Fill in the details to add a new question to the bank.</p>
+            <div id="teacherNotice" class="hidden mt-3 p-3 rounded-xl text-sm font-medium"></div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div class="xl:col-span-2">
+                <form id="questionForm" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Question</label>
+                        <textarea id="qContent" class="w-full rounded-xl border-slate-200 focus:ring-2 focus:ring-primary min-h-[100px]" placeholder="Type question here..." required></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Subject</label>
+                            <select id="qSubject" class="w-full rounded-xl border-slate-200">
+                                <option>History</option><option>Religion</option><option>English</option><option>Arabic</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Difficulty</label>
+                            <div class="flex space-x-1" id="diffGroup">
+                                <button type="button" data-v="Easy" class="flex-1 py-2 text-[10px] border border-slate-200 rounded-lg">Easy</button>
+                                <button type="button" data-v="Mid" class="flex-1 py-2 text-[10px] border border-slate-200 rounded-lg diff-active">Mid</button>
+                                <button type="button" data-v="Hard" class="flex-1 py-2 text-[10px] border border-slate-200 rounded-lg">Hard</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-xs font-bold text-slate-400 uppercase">Options</label>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="flex items-center space-x-2"><span class="font-bold text-primary w-4">A</span><input id="opt0" class="flex-1 rounded-xl border-slate-200 text-sm" placeholder="Option A" required/></div>
+                            <div class="flex items-center space-x-2"><span class="font-bold text-slate-400 w-4">B</span><input id="opt1" class="flex-1 rounded-xl border-slate-200 text-sm" placeholder="Option B" required/></div>
+                            <div class="flex items-center space-x-2"><span class="font-bold text-slate-400 w-4">C</span><input id="opt2" class="flex-1 rounded-xl border-slate-200 text-sm" placeholder="Option C" required/></div>
+                            <div class="flex items-center space-x-2"><span class="font-bold text-slate-400 w-4">D</span><input id="opt3" class="flex-1 rounded-xl border-slate-200 text-sm" placeholder="Option D" required/></div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-emerald-50 rounded-xl flex items-center justify-between">
+                        <span class="text-xs font-bold text-secondary uppercase">Correct</span>
+                        <div class="flex space-x-2" id="ansGroup">
+                            <button type="button" data-i="0" class="w-8 h-8 rounded-full bg-white border border-slate-200 font-bold text-xs ans-active">A</button>
+                            <button type="button" data-i="1" class="w-8 h-8 rounded-full bg-white border border-slate-200 font-bold text-xs">B</button>
+                            <button type="button" data-i="2" class="w-8 h-8 rounded-full bg-white border border-slate-200 font-bold text-xs">C</button>
+                            <button type="button" data-i="3" class="w-8 h-8 rounded-full bg-white border border-slate-200 font-bold text-xs">D</button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button type="button" onclick="openLessonModal()" class="flex-1 py-4 border-2 border-primary text-primary font-black rounded-xl active:scale-[0.98] transition-all">معلومات الدرس</button>
+                        <button type="submit" id="submitBtn" class="flex-1 py-4 bg-secondary text-white font-black rounded-xl shadow-lg active:scale-[0.98] transition-all">SUBMIT QUESTION</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="xl:col-span-1">
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="p-4 border-b border-slate-100 font-bold text-xs text-slate-400 uppercase">Recent Activity</div>
+                    <div id="recentList" class="divide-y divide-slate-50 max-h-[400px] overflow-y-auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="question-bank" class="page-section max-w-5xl mx-auto">
+        <h2 class="text-2xl font-bold text-primary mb-4">Question Bank</h2>
+        <div class="bg-white p-12 rounded-2xl border border-dashed border-slate-300 text-center text-slate-400">
+            Coming Soon: Manage all your questions here.
+        </div>
+    </div>
+
+    <div id="dashboard" class="page-section max-w-5xl mx-auto">
+        <h2 class="text-2xl font-bold text-primary mb-4">Dashboard</h2>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><p class="text-xs text-slate-500">Total Questions</p><p class="text-2xl font-bold" id="totalCount">0</p></div>
+        </div>
+    </div>
+
+</main>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+        authDomain: "tawj-d1f01.firebaseapp.com",
+        projectId: "tawj-d1f01",
+        storageBucket: "tawj-d1f01.firebasestorage.app",
+        messagingSenderId: "124295262421",
+        appId: "1:124295262421:web:87cd51227a13e0a710725c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const teacherNotice = document.getElementById("teacherNotice");
+    const formEl = document.getElementById("questionForm");
+    const submitBtn = document.getElementById("submitBtn");
+    let canManageQuestions = false;
+
+    function showNotice(message, type = "error") {
+        teacherNotice.textContent = message;
+        teacherNotice.classList.remove("hidden", "bg-red-50", "text-red-700", "border", "border-red-200", "bg-blue-50", "text-blue-700", "border-blue-200", "bg-green-50", "text-green-700", "border-green-200");
+        if (type === "info") {
+            teacherNotice.classList.add("bg-blue-50", "text-blue-700", "border", "border-blue-200");
+        } else if (type === "success") {
+            teacherNotice.classList.add("bg-green-50", "text-green-700", "border", "border-green-200");
+        } else {
+            teacherNotice.classList.add("bg-red-50", "text-red-700", "border", "border-red-200");
+        }
+    }
+
+    function setFormDisabled(disabled) {
+        formEl.querySelectorAll("input, textarea, select, button").forEach((el) => {
+            el.disabled = disabled;
+        });
+    }
+
+    async function checkTeacherAccess(user) {
+        // 1) Check custom claims first
+        const tokenResult = await user.getIdTokenResult();
+        const roleFromClaim = tokenResult?.claims?.role;
+        if (roleFromClaim === "teacher") return true;
+
+        // 2) Check teacher_emails whitelist collection
+        const email = (user.email || "").trim().toLowerCase();
+        if (email) {
+            const teacherEmailSnap = await getDoc(doc(db, "teacher_emails", email));
+            if (teacherEmailSnap.exists()) return true;
+        }
+
+        // 3) Fallback to users/{uid} document role flags
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+        if (!userSnap.exists()) return false;
+        const userData = userSnap.data();
+        return userData?.role === "teacher" || userData?.isTeacher === true;
+    }
+
+    function startRealtimeList() {
+        const q = query(collection(db, "questions"), orderBy("createdAt", "desc"), limit(5));
+        onSnapshot(q, (snap) => {
+            const list = document.getElementById('recentList');
+            list.innerHTML = "";
+            document.getElementById('totalCount').innerText = snap.size;
+            snap.forEach(docItem => {
+                const d = docItem.data();
+                list.innerHTML += `
+                <div class="p-4 hover:bg-slate-50 transition-all">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-black text-primary px-2 py-0.5 bg-blue-50 rounded uppercase">${d.subject}</span>
+                        <span class="text-[9px] text-slate-400">${d.difficulty}</span>
+                    </div>
+                    <p class="text-xs font-medium text-slate-700 line-clamp-1">${d.text}</p>
+                </div>`;
+            });
+        }, (err) => {
+            if (err?.code === "permission-denied") {
+                showNotice("لا تملك صلاحية عرض بنك الأسئلة. اطلب تفعيل صلاحية Teacher.");
+            } else {
+                showNotice("تعذر تحميل الأسئلة حالياً. حاول مرة أخرى.");
+            }
+        });
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = "signup.html";
+            return;
+        }
+
+        try {
+            canManageQuestions = await checkTeacherAccess(user);
+            if (!canManageQuestions) {
+                setFormDisabled(true);
+                showNotice("هذا الحساب ليس Teacher ولا يملك صلاحية إضافة الأسئلة.", "info");
+                return;
+            }
+
+            setFormDisabled(false);
+            showNotice("تم تفعيل وضع المعلم. يمكنك الآن إضافة الأسئلة.", "success");
+            startRealtimeList();
+        } catch (err) {
+            setFormDisabled(true);
+            showNotice("حدث خطأ أثناء التحقق من الصلاحيات. حاول تسجيل الخروج والدخول مجددًا.");
+        }
+    });
+
+    // Navigation logic
+    window.showPage = (id) => {
+        document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    };
+
+    let selectedDiff = "Mid";
+    let selectedCorrect = 0;
+
+    // UI Interactive Logic
+    document.querySelectorAll('#diffGroup button').forEach(b => {
+        b.onclick = () => {
+            document.querySelectorAll('#diffGroup button').forEach(x => x.classList.remove('diff-active'));
+            b.classList.add('diff-active');
+            selectedDiff = b.dataset.v;
+        };
+    });
+
+    document.querySelectorAll('#ansGroup button').forEach(b => {
+        b.onclick = () => {
+            document.querySelectorAll('#ansGroup button').forEach(x => x.classList.remove('ans-active'));
+            b.classList.add('ans-active');
+            selectedCorrect = parseInt(b.dataset.i);
+        };
+    });
+
+    // Lesson info state
+    let lessonData = {
+        name: '',
+        unit: 0,
+        count: 0
+    };
+
+    window.openLessonModal = () => {
+        document.getElementById('lessonModal').classList.remove('hidden');
+    };
+
+    window.closeLessonModal = () => {
+        document.getElementById('lessonModal').classList.add('hidden');
+    };
+
+    window.confirmLessonInfo = () => {
+        const name = document.getElementById('lessonName').value.trim();
+        const unit = parseInt(document.getElementById('unitNumber').value);
+        const count = parseInt(document.getElementById('questionCount').value);
+
+        if (!name) {
+            alert('الرجاء إدخال اسم الدرس');
+            return;
+        }
+        if (isNaN(unit) || unit < 1 || unit > 10) {
+            alert('رقم الوحدة يجب أن يكون بين 1 و 10');
+            return;
+        }
+        if (isNaN(count) || count < 1 || count > 50) {
+            alert('عدد الأسئلة يجب أن يكون بين 1 و 50');
+            return;
+        }
+
+        lessonData = { name, unit, count };
+        window.closeLessonModal();
+        showNotice(`تم تحديد: ${name} - الوحدة ${unit} - ${count} أسئلة`, 'success');
+    };
+
+    // Form Submission
+    document.getElementById('questionForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+
+        if (!canManageQuestions) {
+            showNotice('لا تملك صلاحية إضافة الأسئلة. تواصل مع الأدمن لتفعيل صلاحية Teacher.');
+            return;
+        }
+
+        if (!lessonData.name) {
+            showNotice('الرجاء تحديد معلومات الدرس أولاً', 'info');
+            window.openLessonModal();
+            return;
+        }
+
+        btn.disabled = true; btn.innerText = "SAVING...";
+
+        try {
+            await addDoc(collection(db, "questions"), {
+                text: document.getElementById('qContent').value,
+                subject: document.getElementById('qSubject').value,
+                difficulty: selectedDiff,
+                options: [document.getElementById('opt0').value, document.getElementById('opt1').value, document.getElementById('opt2').value, document.getElementById('opt3').value],
+                correctIndex: selectedCorrect,
+                lessonName: lessonData.name,
+                unitNumber: lessonData.unit,
+                createdAt: serverTimestamp()
+            });
+            e.target.reset();
+            showNotice("تم حفظ السؤال بنجاح!", "success");
+        } catch (err) {
+            if (err?.code === "permission-denied") {
+                showNotice("تم رفض العملية: صلاحية إضافة الأسئلة غير مفعلة في Firebase Rules.");
+            } else {
+                showNotice("تعذر حفظ السؤال حالياً. حاول مرة أخرى.");
+            }
+        }
+        btn.disabled = false; btn.innerText = "SUBMIT QUESTION";
+    };
+</script>
+    <script src="site-shell.js" defer></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
+
+
+

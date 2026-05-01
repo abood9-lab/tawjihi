@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html class="light" lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+    <title>لوحة المتصدرين - TawjihiGuide</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { 
+            font-family: 'Noto Sans Arabic', sans-serif; 
+            background-color: #f8f9ff; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-nav { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+        }
+        .leaderboard-row { transition: all 0.3s ease; }
+        .leaderboard-row:hover { background-color: #f3f4f6; }
+        .medal-gold { color: #fbbf24; }
+        .medal-silver { color: #d1d5db; }
+        .medal-bronze { color: #d97706; }
+    </style>
+</head>
+<body class="bg-background text-slate-900 min-h-screen overflow-x-hidden pb-24 lg:pb-0">
+
+<header class="fixed top-0 z-[60] w-full h-16 glass-nav border-b border-slate-200 px-4 md:px-8 flex justify-between items-center">
+    <div class="flex items-center gap-4">
+        <a href="dashboard.html" class="p-2 hover:bg-slate-100 rounded-full transition-all">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <span class="text-xl font-black text-primary tracking-tighter">لوحة المتصدرين</span>
+    </div>
+</header>
+
+<aside class="hidden lg:flex flex-col fixed right-0 top-16 h-[calc(100vh-64px)] w-64 p-4 bg-white border-l border-slate-200 z-40">
+    <nav class="flex-1 space-y-2 mt-4 text-right">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">dashboard</span> لوحة التحكم
+        </a>
+        <a href="courses.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">menu_book</span> المواد الدراسية
+        </a>
+        <a href="quiz.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">quiz</span> بنك الأسئلة
+        </a>
+        <a href="messages.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">mail</span> المراسلات
+        </a>
+        <a href="search-users.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">people</span> البحث عن الطلاب
+        </a>
+        <a href="notifications.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">notifications</span> الإشعارات
+        </a>
+        <a href="leaderboard.html" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-primary font-bold rounded-xl transition-all shadow-sm">
+            <span class="material-symbols-outlined">leaderboard</span> المتصدرون
+        </a>
+        <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+            <span class="material-symbols-outlined">person</span> الملف الشخصي
+        </a>
+    </nav>
+</aside>
+
+<main class="pt-20 pb-20 lg:mr-64 px-4 md:px-8">
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Top 3 Podium -->
+        <div class="mb-12">
+            <h2 class="text-lg font-black text-slate-800 mb-6 text-center">أفضل 3 طلاب</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                <!-- Second Place -->
+                <div id="secondPlace" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center order-1 md:order-1 opacity-50 md:opacity-100">
+                    <span class="material-symbols-outlined medal-silver text-5xl block mb-2">medal</span>
+                    <p class="font-bold text-sm text-slate-600 mb-2">-</p>
+                    <p class="text-2xl font-black text-slate-800">- نقطة</p>
+                </div>
+
+                <!-- First Place -->
+                <div id="firstPlace" class="bg-gradient-to-br from-yellow-400 to-amber-500 p-8 rounded-3xl shadow-2xl text-center text-white order-2 md:-translate-y-6">
+                    <span class="material-symbols-outlined medal-gold text-6xl block mb-3">military_tech</span>
+                    <p class="font-bold text-lg mb-2">-</p>
+                    <p class="text-3xl font-black">- نقطة</p>
+                    <div class="mt-3 text-sm opacity-90">المركز الأول</div>
+                </div>
+
+                <!-- Third Place -->
+                <div id="thirdPlace" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm text-center order-3 md:order-3 opacity-50 md:opacity-100">
+                    <span class="material-symbols-outlined medal-bronze text-5xl block mb-2">medal</span>
+                    <p class="font-bold text-sm text-slate-600 mb-2">-</p>
+                    <p class="text-2xl font-black text-slate-800">- نقطة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex gap-3 mb-6 overflow-x-auto pb-2">
+            <button onclick="filterLeaderboard('all')" data-filter="all" class="filter-btn px-4 py-2 bg-primary text-white font-bold rounded-full text-sm whitespace-nowrap transition-all">
+                جميع الطلاب
+            </button>
+            <button onclick="filterLeaderboard('week')" data-filter="week" class="filter-btn px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-full text-sm whitespace-nowrap hover:bg-slate-50 transition-all">
+                هذا الأسبوع
+            </button>
+            <button onclick="filterLeaderboard('month')" data-filter="month" class="filter-btn px-4 py-2 border border-slate-200 text-slate-600 font-bold rounded-full text-sm whitespace-nowrap hover:bg-slate-50 transition-all">
+                هذا الشهر
+            </button>
+        </div>
+
+        <!-- Full Leaderboard -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="hidden md:grid grid-cols-12 gap-4 p-4 bg-slate-50 border-b border-slate-200 font-bold text-sm text-slate-600">
+                <div class="col-span-1">المركز</div>
+                <div class="col-span-4">الطالب</div>
+                <div class="col-span-3">النقاط</div>
+                <div class="col-span-2">الشارات</div>
+                <div class="col-span-2">التقدم</div>
+            </div>
+            <div id="leaderboardList" class="divide-y divide-slate-100">
+                <!-- Rows will be populated by JS -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<nav class="lg:hidden fixed bottom-0 w-full glass-nav border-t border-slate-200 z-[70] safe-bottom h-16 flex justify-around items-center">
+    <a href="dashboard.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="text-[10px] font-bold">الرئيسية</span>
+    </a>
+    <a href="courses.html" class="flex flex-col items-center gap-1 text-slate-400">
+        <span class="material-symbols-outlined">menu_book</span>
+        <span class="text-[10px] font-bold">المواد</span>
+    </a>
+    <a href="leaderboard.html" class="flex flex-col items-center gap-1 text-primary">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">leaderboard</span>
+        <span class="text-[10px] font-black">المتصدرون</span>
+    </a>
+</nav>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+        authDomain: "tawj-d1f01.firebaseapp.com",
+        projectId: "tawj-d1f01",
+        storageBucket: "tawj-d1f01.firebasestorage.app",
+        messagingSenderId: "124295262421",
+        appId: "1:124295262421:web:87cd51227a13e0a710725c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let allUsers = [];
+    let currentFilter = 'all';
+
+    // Get badge emoji based on badge name
+    function getBadgeEmoji(badgeName) {
+        const badges = {
+            'starter': '⭐',
+            'achiever': '🏆',
+            'master': '👑',
+            'speedster': '⚡',
+            'perfect': '💯'
+        };
+        return badges[badgeName] || '🎖️';
+    }
+
+    // Filter leaderboard
+    window.filterLeaderboard = (filter) => {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('bg-primary', 'text-white', 'border-primary');
+            btn.classList.add('border-slate-200', 'text-slate-600', 'hover:bg-slate-50');
+        });
+        event.target.classList.remove('border-slate-200', 'text-slate-600', 'hover:bg-slate-50');
+        event.target.classList.add('bg-primary', 'text-white');
+        renderLeaderboard();
+    };
+
+    // Render leaderboard
+    function renderLeaderboard() {
+        let filtered = allUsers;
+        const now = new Date();
+        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        if (currentFilter === 'week') {
+            filtered = filtered.filter(u => {
+                const lastActivity = u.lastActivityDate ? new Date(u.lastActivityDate.toDate?.() || u.lastActivityDate) : new Date(0);
+                return lastActivity >= oneWeekAgo;
+            });
+        } else if (currentFilter === 'month') {
+            filtered = filtered.filter(u => {
+                const lastActivity = u.lastActivityDate ? new Date(u.lastActivityDate.toDate?.() || u.lastActivityDate) : new Date(0);
+                return lastActivity >= oneMonthAgo;
+            });
+        }
+
+        const list = document.getElementById('leaderboardList');
+        list.innerHTML = '';
+
+        filtered.forEach((user, idx) => {
+            const rank = idx + 1;
+            const badges = (user.badges || []).slice(0, 3).map(b => getBadgeEmoji(b)).join('');
+            const progressPercent = Math.min(100, Math.round((user.points || 0) / 1000 * 100));
+            
+            let medalIcon = '';
+            if (rank === 1) medalIcon = '<span class="material-symbols-outlined medal-gold">military_tech</span>';
+            else if (rank === 2) medalIcon = '<span class="material-symbols-outlined medal-silver">medal</span>';
+            else if (rank === 3) medalIcon = '<span class="material-symbols-outlined medal-bronze">medal</span>';
+
+            const row = document.createElement('div');
+            row.className = 'leaderboard-row p-4 md:grid md:grid-cols-12 md:gap-4 flex flex-col gap-2';
+            row.innerHTML = `
+                <div class="col-span-1 flex items-center gap-2">
+                    ${medalIcon}
+                    <span class="font-black text-primary text-lg">#${rank}</span>
+                </div>
+                <div class="col-span-4 flex items-center gap-3">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid || 'user'}" class="w-10 h-10 rounded-full"/>
+                    <div>
+                        <p class="font-bold text-sm text-slate-800">${user.name || 'طالب'}</p>
+                        <p class="text-xs text-slate-400">${user.school || 'المدرسة'}</p>
+                    </div>
+                </div>
+                <div class="col-span-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-amber-500">star</span>
+                    <div>
+                        <p class="font-black text-lg text-slate-800">${user.points || 0}</p>
+                        <p class="text-xs text-slate-400 hidden md:block">نقطة</p>
+                    </div>
+                </div>
+                <div class="col-span-2 flex items-center gap-1">
+                    <span>${badges || '—'}</span>
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                    <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full transition-all" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <span class="text-xs text-slate-400">${progressPercent}%</span>
+                </div>
+            `;
+            list.appendChild(row);
+        });
+
+        // Update podium
+        updatePodium(filtered);
+    }
+
+    // Update top 3
+    function updatePodium(users) {
+        const first = users[0];
+        const second = users[1];
+        const third = users[2];
+
+        if (first) {
+            document.getElementById('firstPlace').innerHTML = `
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${first.uid || 'user'}" class="w-16 h-16 rounded-full mx-auto mb-2"/>
+                <p class="font-bold text-lg mb-1">${first.name || 'طالب'}</p>
+                <p class="text-3xl font-black">${first.points || 0} نقطة</p>
+                <div class="mt-3 text-sm opacity-90">المركز الأول 🥇</div>
+            `;
+        }
+
+        if (second) {
+            document.getElementById('secondPlace').innerHTML = `
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${second.uid || 'user'}" class="w-12 h-12 rounded-full mx-auto mb-2"/>
+                <p class="font-bold text-sm text-slate-600 mb-1">${second.name || 'طالب'}</p>
+                <p class="text-2xl font-black text-slate-800">${second.points || 0} نقطة</p>
+            `;
+        } else {
+            document.getElementById('secondPlace').innerHTML = '<p class="text-slate-400">-</p>';
+        }
+
+        if (third) {
+            document.getElementById('thirdPlace').innerHTML = `
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${third.uid || 'user'}" class="w-12 h-12 rounded-full mx-auto mb-2"/>
+                <p class="font-bold text-sm text-slate-600 mb-1">${third.name || 'طالب'}</p>
+                <p class="text-2xl font-black text-slate-800">${third.points || 0} نقطة</p>
+            `;
+        } else {
+            document.getElementById('thirdPlace').innerHTML = '<p class="text-slate-400">-</p>';
+        }
+    }
+
+    // Load leaderboard
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            window.location.href = "signup.html";
+            return;
+        }
+
+        try {
+            const q = query(collection(db, "users"), orderBy("points", "desc"), limit(100));
+            const snap = await getDocs(q);
+            
+            allUsers = [];
+            snap.forEach(doc => {
+                allUsers.push({ uid: doc.id, ...doc.data() });
+            });
+
+            renderLeaderboard();
+        } catch (err) {
+            console.error("Error loading leaderboard:", err);
+            document.getElementById('leaderboardList').innerHTML = '<div class="p-4 text-center text-slate-400">حدث خطأ في تحميل البيانات</div>';
+        }
+    });
+</script>
+<script src="site-shell.js" defer></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

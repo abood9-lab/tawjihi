@@ -1,0 +1,608 @@
+
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>TawjihiGuide - Question Bank</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { font-family: 'Lexend', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+        /* تحسين مظهر الراديو بوتون عند الاختيار */
+        input:checked + div { border-color: #00346f !important; background-color: rgba(0, 52, 111, 0.05) !important; }
+        input:checked + div .opt-circle { background-color: #00346f !important; color: white !important; border-color: #00346f !important; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface pb-20 lg:pb-0">
+
+<header class="bg-white/80 backdrop-blur-md border-b border-slate-200 flex justify-between items-center w-full px-6 h-16 fixed top-0 z-[100]">
+    <div class="text-xl font-black tracking-tight text-primary">TawjihiGuide</div>
+    <div class="flex items-center space-x-3">
+        <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined">notifications</span></button>
+        <div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs uppercase">ST</div>
+    </div>
+</header>
+
+<aside class="hidden lg:flex flex-col fixed right-0 top-16 h-[calc(100vh-64px)] w-64 bg-white border-l border-slate-200 p-4 space-y-2 z-40">
+    <nav class="space-y-1">
+        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all">
+            <span class="material-symbols-outlined">dashboard</span><span class="text-sm font-medium">Dashboard</span>
+        </a>
+        <a href="#" class="flex items-center space-x-3 px-3 py-2 bg-blue-50 text-primary rounded-lg font-bold">
+            <span class="material-symbols-outlined">quiz</span><span class="text-sm">Question Bank</span>
+        </a>
+        <a href="#" class="flex items-center space-x-3 px-3 py-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-all">
+            <span class="material-symbols-outlined">trending_up</span><span class="text-sm font-medium">Progress</span>
+        </a>
+    </nav>
+</aside>
+
+<main class="lg:mr-64 pt-20 p-4 lg:p-8">
+    <div class="max-w-6xl mx-auto">
+        
+        <div class="mb-8">
+            <h1 class="text-2xl lg:text-3xl font-black text-primary mb-2">بنك الأسئلة الذكي</h1>
+            <p class="text-on-surface-variant text-sm">اختر المادة وابدأ التدريب فوراً</p>
+        </div>
+
+        <!-- Lesson Selection Modal -->
+        <div id="lessonSelectModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] hidden">
+            <div class="bg-white rounded-3xl p-6 max-w-md w-full mx-4 shadow-2xl max-h-[80vh] overflow-y-auto">
+                <h2 class="text-xl font-bold text-primary mb-4">اختر الدرس أو الوحدة</h2>
+                <div id="lessonList" class="space-y-2 mb-6"></div>
+                <button onclick="closeLessonSelect()" class="w-full py-3 border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50">إلغاء</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <button onclick="showLessonModal('Arabic')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-primary transition-all text-right">
+                <span class="material-symbols-outlined text-primary mb-2">menu_book</span>
+                <h3 class="font-bold text-sm block">اللغة العربية</h3>
+                <p class="text-[10px] text-slate-400">أسئلة القواعد والنصوص</p>
+            </button>
+            <button onclick="showLessonModal('English')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-primary transition-all text-right">
+                <span class="material-symbols-outlined text-secondary mb-2">language</span>
+                <h3 class="font-bold text-sm block">اللغة الإنجليزية</h3>
+                <p class="text-[10px] text-slate-400">Grammar & Vocab</p>
+            </button>
+            <button onclick="showLessonModal('History')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-primary transition-all text-right">
+                <span class="material-symbols-outlined text-orange-500 mb-2">history_edu</span>
+                <h3 class="font-bold text-sm block">تاريخ الأردن</h3>
+                <p class="text-[10px] text-slate-400">شامل لكافة الوحدات</p>
+            </button>
+            <button onclick="showLessonModal('Religion')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:border-primary transition-all text-right">
+                <span class="material-symbols-outlined text-emerald-500 mb-2">mosque</span>
+                <h3 class="font-bold text-sm block">التربية الإسلامية</h3>
+                <p class="text-[10px] text-slate-400">الفقه، التفسير، والحديث</p>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8" id="question-display-area">
+                <div class="bg-white rounded-3xl border-2 border-dashed border-slate-200 p-16 text-center">
+                    <span class="material-symbols-outlined text-5xl text-slate-200 mb-4">touch_app</span>
+                    <p class="text-slate-400 font-medium">الرجاء اختيار مادة من الأعلى لبدء الاختبار</p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-primary text-white rounded-3xl p-6 shadow-xl">
+                    <h3 class="text-xs uppercase tracking-widest opacity-70 mb-4">أداء اليوم</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/10 p-4 rounded-2xl text-center">
+                            <p class="text-[10px] opacity-80 mb-1">الدقة</p>
+                            <p class="text-xl font-bold" id="accuracyValue">-- %</p>
+                        </div>
+                        <div class="bg-white/10 p-4 rounded-2xl text-center">
+                            <p class="text-[10px] opacity-80 mb-1">الأسئلة</p>
+                            <p class="text-xl font-bold" id="side-count">0</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-white/10 p-4 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] opacity-80 mb-1">الموقت</p>
+                            <p class="text-2xl font-black"><span id="timerValue">--</span><span class="text-sm opacity-80">ث</span></p>
+                        </div>
+                        <span class="material-symbols-outlined text-3xl opacity-80">timer</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-t border-slate-200 flex justify-around py-3 shadow-2xl">
+    <button class="flex flex-col items-center text-slate-400"><span class="material-symbols-outlined">home</span><span class="text-[10px]">الرئيسية</span></button>
+    <button class="flex flex-col items-center text-primary"><span class="material-symbols-outlined">quiz</span><span class="text-[10px] font-bold">الاختبارات</span></button>
+    <button class="flex flex-col items-center text-slate-400"><span class="material-symbols-outlined">person</span><span class="text-[10px]">حسابي</span></button>
+</nav>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
+        authDomain: "tawj-d1f01.firebaseapp.com",
+        projectId: "tawj-d1f01",
+        storageBucket: "tawj-d1f01.firebasestorage.app",
+        messagingSenderId: "124295262421",
+        appId: "1:124295262421:web:87cd51227a13e0a710725c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = "signup.html";
+        }
+    });
+
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let selectedAnswer = null;
+    let hasAnswered = false;
+    let questionTimer = null;
+    let timeLeft = 30;
+    let score = 0;
+    let answeredCount = 0;
+    let wrongAnswers = [];
+    window.currentSubjectName = "";
+    let selectedLesson = null;
+    let allLessons = [];
+
+    function clearQuestionTimer() {
+        if (questionTimer) {
+            clearInterval(questionTimer);
+            questionTimer = null;
+        }
+    }
+
+    function startQuestionTimer() {
+        clearQuestionTimer();
+        timeLeft = 30;
+        const timerValue = document.getElementById('timerValue');
+        timerValue.innerText = timeLeft;
+
+        questionTimer = setInterval(() => {
+            timeLeft -= 1;
+            timerValue.innerText = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearQuestionTimer();
+                if (!hasAnswered) {
+                    submitAnswer(true);
+                }
+            }
+        }, 1000);
+    }
+
+    function normalizeAnswerIndex() {
+        if (selectedAnswer === null || selectedAnswer === undefined) {
+            return null;
+        }
+        const parsed = Number(selectedAnswer);
+        return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function updateAccuracy() {
+        const accuracy = answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0;
+        document.getElementById('accuracyValue').innerText = `${accuracy} %`;
+    }
+
+    async function saveQuizResult(user) {
+        const accuracy = answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0;
+        const earnedPoints = score * 10; // 10 نقاط لكل إجابة صحيحة
+        const bonusPoints = accuracy >= 80 ? 50 : 0; // 50 نقطة إضافية لدقة 80% فأعلى
+        const totalPoints = earnedPoints + bonusPoints;
+
+        try {
+            const userRef = doc(db, "users", user.uid);
+            const userSnap = await getDoc(userRef);
+            const currentPoints = userSnap.exists() ? (userSnap.data().points || 0) : 0;
+            const currentBadges = userSnap.exists() ? (userSnap.data().badges || []) : [];
+            
+            // إضافة شارات جديدة
+            let newBadges = [...currentBadges];
+            if (!newBadges.includes('starter') && currentPoints + totalPoints >= 50) newBadges.push('starter');
+            if (!newBadges.includes('achiever') && currentPoints + totalPoints >= 500) newBadges.push('achiever');
+            if (!newBadges.includes('master') && currentPoints + totalPoints >= 2000) newBadges.push('master');
+            if (!newBadges.includes('perfect') && accuracy === 100) newBadges.push('perfect');
+            if (!newBadges.includes('speedster') && timeLeft > 0) newBadges.push('speedster');
+
+            await setDoc(userRef, {
+                points: currentPoints + totalPoints,
+                badges: [...new Set(newBadges)], // إزالة التكرارات
+                lastActivityDate: serverTimestamp(),
+                lastQuizScore: { score, accuracy, totalQuestions: currentQuestions.length, totalPoints }
+            }, { merge: true });
+        } catch (err) {
+            console.error("Error saving quiz result:", err);
+        }
+    }
+
+    function finishQuiz() {
+        clearQuestionTimer();
+        const area = document.getElementById('question-display-area');
+        const accuracy = answeredCount > 0 ? Math.round((score / answeredCount) * 100) : 0;
+        const earnedPoints = score * 10;
+        const bonusPoints = accuracy >= 80 ? 50 : 0;
+        const totalPoints = earnedPoints + bonusPoints;
+
+        const reviewHtml = wrongAnswers.length > 0
+            ? wrongAnswers.map((item, index) => `
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[10px] font-black text-primary px-2 py-0.5 bg-blue-50 rounded uppercase">${item.subject}</span>
+                        <span class="text-[10px] text-slate-400">سؤال ${index + 1}</span>
+                    </div>
+                    <p class="text-sm font-bold text-slate-800 mb-3">${item.text}</p>
+                    <div class="space-y-2 text-sm">
+                        <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700"><span class="font-black">إجابتك:</span> ${item.userAnswerText}</div>
+                        <div class="p-3 rounded-xl bg-green-50 border border-green-200 text-green-700"><span class="font-black">الإجابة الصحيحة:</span> ${item.correctAnswerText}</div>
+                    </div>
+                </div>`).join('')
+            : `<div class="bg-green-50 border border-green-200 rounded-2xl p-4 text-green-700 font-bold">أحسنت، لم تخطئ في أي سؤال.</div>`;
+
+        area.innerHTML = `
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 lg:p-10 shadow-sm">
+                <div class="text-center mb-8">
+                    <div class="mx-auto w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-4xl">military_tech</span>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-800 mb-2">انتهى الاختبار</h2>
+                    <p class="text-slate-500">النتيجة النهائية حسب إجاباتك</p>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-slate-400 mb-1">النتيجة</p>
+                        <p class="text-2xl font-black text-primary">${score} / ${currentQuestions.length}</p>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-slate-400 mb-1">الدقة</p>
+                        <p class="text-2xl font-black text-primary">${accuracy}%</p>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-amber-600 mb-1">النقاط المكتسبة</p>
+                        <p class="text-2xl font-black text-amber-600">+${totalPoints}</p>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-slate-400 mb-1">الخطأ</p>
+                        <p class="text-2xl font-black text-red-600">${wrongAnswers.length}</p>
+                    </div>
+                </div>
+
+                ${bonusPoints > 0 ? `<div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl text-green-700 font-bold text-center">🎉 حصلت على ${bonusPoints} نقطة إضافية! دقة 80% فأعلى</div>` : ''}
+
+                <div class="mb-8">
+                    <h3 class="text-lg font-black text-slate-800 mb-4">مراجعة الأسئلة الغلط</h3>
+                    <div class="space-y-4">
+                        ${reviewHtml}
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-between">
+                    <a href="leaderboard.html" class="text-center px-6 py-3 rounded-xl bg-slate-900 text-white font-black">عرض لوحة المتصدرين</a>
+                    <button onclick="window.location.reload()" class="px-6 py-3 rounded-xl bg-primary text-white font-black">إعادة الاختبار</button>
+                    <button onclick="loadSubject(window.currentSubjectName)" class="px-6 py-3 rounded-xl bg-secondary text-white font-black">إعادة نفس المادة</button>
+                </div>
+            </div>
+        `;
+
+        // Save quiz results
+        onAuthStateChanged(auth, (user) => {
+            if (user) saveQuizResult(user);
+        });
+
+        document.getElementById('side-count').innerText = currentQuestions.length;
+        document.getElementById('timerValue').innerText = '--';
+        document.getElementById('accuracyValue').innerText = `${accuracy} %`;
+    }
+
+    function markCurrentQuestion(selectedIndex, forceWrong = false) {
+        const q = currentQuestions[currentIndex];
+        const options = document.querySelectorAll('label[data-option-index]');
+
+        options.forEach((label) => {
+            const optionIndex = Number(label.dataset.optionIndex);
+            const inner = label.querySelector('div');
+
+            if (optionIndex === q.correctIndex) {
+                inner.classList.add('border-green-500', 'bg-green-50');
+                inner.classList.remove('border-slate-100');
+            }
+
+            if (!forceWrong && optionIndex === selectedIndex && selectedIndex !== q.correctIndex) {
+                inner.classList.add('border-red-500', 'bg-red-50');
+                inner.classList.remove('border-slate-100');
+            }
+
+            const radio = label.querySelector('input');
+            radio.disabled = true;
+        });
+    }
+
+    function submitAnswer(fromTimer = false) {
+        if (hasAnswered) {
+            return;
+        }
+
+        const q = currentQuestions[currentIndex];
+        const selectedIndex = normalizeAnswerIndex();
+        const correctIndex = q.correctIndex;
+        const isCorrect = selectedIndex === correctIndex;
+        const userAnswerText = selectedIndex === null ? 'لم يتم اختيار إجابة' : q.options[selectedIndex];
+
+        hasAnswered = true;
+        clearQuestionTimer();
+
+        if (isCorrect) {
+            score += 1;
+        } else {
+            wrongAnswers.push({
+                subject: q.subject,
+                text: q.text,
+                userAnswerText,
+                correctAnswerText: q.options[correctIndex]
+            });
+        }
+
+        answeredCount += 1;
+        updateAccuracy();
+        markCurrentQuestion(selectedIndex, fromTimer && selectedIndex === null);
+
+        const area = document.getElementById('question-display-area');
+        const feedbackColor = isCorrect ? 'green' : 'red';
+        const feedbackTitle = isCorrect ? 'إجابة صحيحة' : 'إجابة خاطئة';
+        const feedbackText = isCorrect
+            ? `أحسنت، إجابتك صحيحة.`
+            : `الإجابة الصحيحة هي: ${q.options[correctIndex]}`;
+
+        const feedback = document.createElement('div');
+        feedback.className = `mt-6 rounded-2xl border px-4 py-4 text-sm font-bold ${isCorrect ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`;
+        feedback.innerHTML = `<div class="flex items-center gap-2 mb-1"><span class="material-symbols-outlined">${isCorrect ? 'check_circle' : 'cancel'}</span>${feedbackTitle}</div><p class="font-medium">${feedbackText}</p>`;
+
+        const currentCard = area.querySelector('.bg-white.rounded-3xl');
+        if (currentCard) {
+            currentCard.appendChild(feedback);
+        }
+
+        const nextButton = document.getElementById('nextQuestionBtn');
+        if (nextButton) {
+            nextButton.disabled = false;
+            nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            nextButton.innerText = currentIndex === currentQuestions.length - 1 ? 'إنهاء الاختبار' : 'السؤال التالي';
+        }
+    }
+
+    // Get unique lessons for a subject
+    async function getLessonsForSubject(subjectName) {
+        try {
+            const q = query(collection(db, "questions"), where("subject", "==", subjectName));
+            const snap = await getDocs(q);
+            const lessonsSet = new Set();
+            const lessonsArray = [];
+            snap.forEach(doc => {
+                const data = doc.data();
+                const lessonName = data.lessonName || "بدون درس";
+                if (!lessonsSet.has(lessonName)) {
+                    lessonsSet.add(lessonName);
+                    lessonsArray.push({
+                        name: lessonName,
+                        unit: data.unitNumber || 1
+                    });
+                }
+            });
+            return lessonsArray.sort((a, b) => a.unit - b.unit);
+        } catch (err) {
+            console.error(err);
+            return [];
+        }
+    }
+
+    window.showLessonModal = async (subjectName) => {
+        window.currentSubjectName = subjectName;
+        allLessons = await getLessonsForSubject(subjectName);
+        const listContainer = document.getElementById('lessonList');
+        listContainer.innerHTML = '';
+
+        if (allLessons.length === 0) {
+            listContainer.innerHTML = '<div class="text-slate-400 text-center py-8">لا توجد دروس متاحة</div>';
+            document.getElementById('lessonSelectModal').classList.remove('hidden');
+            return;
+        }
+
+        allLessons.forEach((lesson, idx) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'w-full p-4 border-2 border-slate-200 rounded-2xl text-right hover:border-primary hover:bg-blue-50 transition-all font-medium';
+            btn.innerHTML = `<div class="font-bold text-slate-800">${lesson.name}</div><div class="text-xs text-slate-400">الوحدة ${lesson.unit}</div>`;
+            btn.onclick = () => {
+                selectedLesson = lesson;
+                window.closeLessonSelect();
+                window.loadSubject(subjectName, lesson.name);
+            };
+            listContainer.appendChild(btn);
+        });
+
+        document.getElementById('lessonSelectModal').classList.remove('hidden');
+    };
+
+    window.closeLessonSelect = () => {
+        document.getElementById('lessonSelectModal').classList.add('hidden');
+    };
+
+    // جلب الأسئلة من Firebase بناءً على المادة والدرس
+    window.loadSubject = async (subjectName, lessonName = null) => {
+        window.currentSubjectName = subjectName;
+        currentQuestions = [];
+        currentIndex = 0;
+        selectedAnswer = null;
+        hasAnswered = false;
+        score = 0;
+        answeredCount = 0;
+        wrongAnswers = [];
+        updateAccuracy();
+        document.getElementById('side-count').innerText = '0';
+
+        const area = document.getElementById('question-display-area');
+        area.innerHTML = `
+            <div class="bg-white rounded-3xl p-20 text-center shadow-sm border border-slate-100">
+                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto mb-4"></div>
+                <p class="text-slate-500 animate-pulse">جاري تحميل أسئلة ${subjectName}...</p>
+            </div>`;
+
+        try {
+            let q;
+            if (lessonName) {
+                q = query(collection(db, "questions"), where("subject", "==", subjectName), where("lessonName", "==", lessonName));
+            } else {
+                q = query(collection(db, "questions"), where("subject", "==", subjectName));
+            }
+            const snap = await getDocs(q);
+            
+            currentQuestions = [];
+            snap.forEach(doc => currentQuestions.push(doc.data()));
+
+            if (currentQuestions.length > 0) {
+                currentIndex = 0;
+                renderQuestion();
+                document.getElementById('side-count').innerText = currentQuestions.length;
+            } else {
+                area.innerHTML = `<div class="bg-white rounded-3xl p-16 text-center border border-slate-200">لا يوجد أسئلة حالياً لهذه المادة.</div>`;
+            }
+        } catch (e) {
+            console.error(e);
+            alert("حدث خطأ في الاتصال بقاعدة البيانات");
+        }
+    };
+
+    // عرض السؤال الحالي في الواجهة
+    function renderQuestion() {
+        const q = currentQuestions[currentIndex];
+        const container = document.getElementById('question-display-area');
+        selectedAnswer = null;
+        hasAnswered = false;
+        const progress = ((currentIndex + 1) / currentQuestions.length) * 100;
+
+        container.innerHTML = `
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 lg:p-10 shadow-sm relative overflow-hidden transition-all animate-in fade-in duration-500">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-100">
+                    <div class="bg-primary h-full transition-all duration-700" style="width: ${progress}%"></div>
+                </div>
+                
+                <div class="flex justify-between items-center mb-8 mt-2">
+                    <span class="px-3 py-1 bg-primary/10 text-primary font-bold text-[10px] rounded-full uppercase">${q.subject}</span>
+                    <span class="text-slate-400 text-xs">سؤال ${currentIndex + 1} من ${currentQuestions.length}</span>
+                </div>
+
+                <div class="mb-10 text-right" dir="rtl">
+                    <h2 class="text-xl lg:text-2xl font-bold text-slate-800 mb-8 leading-relaxed">${q.text}</h2>
+                    <div class="space-y-4">
+                        ${q.options.map((opt, i) => `
+                            <label class="block group cursor-pointer" data-option-index="${i}">
+                                <input class="hidden peer" name="q-option" type="radio" value="${i}" onchange="window.selectAnswer(${i})"/>
+                                <div class="flex items-center flex-row-reverse p-4 rounded-2xl border-2 border-slate-100 bg-white group-hover:border-slate-200 transition-all">
+                                    <div class="opt-circle w-8 h-8 rounded-full border-2 border-slate-200 flex items-center justify-center ml-4 shrink-0 font-bold text-xs">
+                                        ${String.fromCharCode(65 + i)}
+                                    </div>
+                                    <span class="text-slate-700 font-medium">${opt}</span>
+                                </div>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+                    <button onclick="window.prevQ()" class="px-6 py-2 text-slate-400 font-bold text-sm hover:text-primary transition-colors">السابق</button>
+                    <button onclick="window.handlePrimaryAction()" id="nextQuestionBtn" class="px-8 py-3 bg-secondary text-white font-bold text-sm rounded-xl shadow-lg active:scale-95 transition-all opacity-50 cursor-not-allowed" disabled>
+                        تأكيد الإجابة
+                    </button>
+                </div>
+            </div>
+        `;
+
+        startQuestionTimer();
+    }
+
+    window.selectAnswer = (index) => {
+        selectedAnswer = index;
+        const btn = document.getElementById('nextQuestionBtn');
+        if (btn && !hasAnswered) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    };
+
+    window.handlePrimaryAction = () => {
+        if (!hasAnswered) {
+            submitAnswer(false);
+            return;
+        }
+
+        if (currentIndex < currentQuestions.length - 1) {
+            currentIndex++;
+            renderQuestion();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            finishQuiz();
+        }
+    };
+
+    window.prevQ = () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderQuestion();
+        }
+    };
+</script>
+<script src="site-shell.js" defer></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
