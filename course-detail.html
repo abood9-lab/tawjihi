@@ -74,6 +74,13 @@
             </div>
         </div>
 
+        <section id="enrollmentGate" class="hidden bg-amber-50 border border-amber-200 rounded-3xl p-6 mb-8 text-right">
+            <h2 class="text-xl font-black text-amber-800 mb-2">يلزم الالتحاق بالمادة أولاً</h2>
+            <p class="text-amber-700 text-sm mb-4">للوصول إلى المحتوى المتقدم والمنتدى، اضغط الالتحاق المجاني من صفحة المواد.</p>
+            <a id="enrollmentLink" href="courses.html" class="inline-flex items-center px-4 py-2 rounded-xl bg-primary text-white font-black">اذهب للمواد والالتحاق</a>
+        </section>
+
+        <div id="advancedLessonContent">
         <section id="youtubeSearchSection" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-8">
             <div class="flex items-center justify-between gap-3 mb-6">
                 <div class="text-right">
@@ -135,6 +142,31 @@
                     </div>
                 </div>
             </aside>
+        </div>
+
+        <section class="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mt-8">
+            <div class="mb-6 text-right">
+                <h2 class="text-2xl font-black text-slate-800">منتدى الدرس</h2>
+                <p class="text-slate-500 text-sm">منشورات وردود مرتبطة بالمادة والدرس الحالي.</p>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <textarea id="forumPostText" class="w-full rounded-2xl border border-slate-200 p-3 text-right text-sm" rows="3" placeholder="اكتب منشوراً للدرس..."></textarea>
+                <input id="forumPostImage" type="url" class="w-full rounded-2xl border border-slate-200 p-3 text-right text-sm" placeholder="رابط صورة اختياري (https://...)"/>
+                <div class="flex justify-end">
+                    <button id="forumCreatePostBtn" class="px-5 py-2.5 rounded-xl bg-primary text-white font-black">نشر</button>
+                </div>
+            </div>
+
+            <div id="forumPosts" class="space-y-4">
+                <div class="text-center text-slate-400 py-6">جاري تحميل المنتدى...</div>
+            </div>
+
+            <div id="moderationPanel" class="hidden mt-8 border-t border-slate-200 pt-6">
+                <h3 class="text-lg font-black text-slate-800 mb-3 text-right">لوحة البلاغات (مشرف)</h3>
+                <div id="reportsList" class="space-y-3"></div>
+            </div>
+        </section>
         </div>
     </div>
 </main>
@@ -257,21 +289,31 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        serverTimestamp,
+        getDoc,
+        collection,
+        addDoc,
+        query,
+        where,
+        orderBy,
+        onSnapshot,
+        getDocs,
+        updateDoc,
+        arrayUnion,
+        arrayRemove
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { CONFIG } from "./config.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
-        authDomain: "tawj-d1f01.firebaseapp.com",
-        projectId: "tawj-d1f01",
-        storageBucket: "tawj-d1f01.firebasestorage.app",
-        messagingSenderId: "124295262421",
-        appId: "1:124295262421:web:87cd51227a13e0a710725c"
-    };
+    const firebaseConfig = CONFIG.FIREBASE;
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const YOUTUBE_API_KEY = "AIzaSyDcB8PWSEw8a9nzjPWqyi2y4OhlWqtEPtw";
+    const YOUTUBE_API_KEY = CONFIG.YOUTUBE.API_KEY;
 
     let currentUser = null;
     let currentVideoId = null;
@@ -281,6 +323,10 @@
     let currentSubject = null;
     let aiChatHistory = [];
     let aiLocked = false;
+    let currentUserRole = 'student';
+    let currentForumKey = null;
+    let postsUnsubscribe = null;
+    let reportsUnsubscribe = null;
 
     function showToast(message, type = 'info') {
         const toast = document.createElement('div');
@@ -299,13 +345,72 @@
         return div.innerHTML;
     }
 
-    onAuthStateChanged(auth, (user) => {
+    function normalizeForumKey(value) {
+        return (value || 'lesson')
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^\u0600-\u06FF\w-]/g, '')
+            .slice(0, 80);
+    }
+
+    function isModeratorRole() {
+        return ['admin', 'teacher', 'moderator'].includes(currentUserRole);
+    }
+
+    async function sendNotification(userId, type, message, link = '', extra = {}) {
+        if (!userId || !currentUser || userId === currentUser.uid) return;
+        await addDoc(collection(db, 'notifications'), {
+            userId,
+            senderId: currentUser.uid,
+            type,
+            message,
+            link,
+            unread: true,
+            createdAt: serverTimestamp(),
+            ...extra
+        });
+    }
+
+    function setAdvancedContentVisible(isVisible) {
+        document.getElementById('advancedLessonContent').classList.toggle('hidden', !isVisible);
+        document.getElementById('enrollmentGate').classList.toggle('hidden', isVisible);
+    }
+
+    async function loadUserRole() {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+            currentUserRole = userDoc.data().role || (userDoc.data().isTeacher ? 'teacher' : 'student');
+        }
+        document.getElementById('moderationPanel').classList.toggle('hidden', !isModeratorRole());
+    }
+
+    async function checkEnrollmentOrBlock() {
+        const enrollmentId = `${currentUser.uid}_${currentSubject}`;
+        const enrollmentDoc = await getDoc(doc(db, 'enrollments', enrollmentId));
+        const isEnrolled = enrollmentDoc.exists();
+        setAdvancedContentVisible(isEnrolled);
+        const enrollmentLink = document.getElementById('enrollmentLink');
+        enrollmentLink.href = `courses.html#${currentSubject}`;
+        if (!isEnrolled) {
+            showToast('يلزم الالتحاق بالمادة للوصول إلى المحتوى المتقدم', 'info');
+        }
+        return isEnrolled;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
         if (!user) {
             window.location.href = 'signup.html';
             return;
         }
         currentUser = user;
         initializeLesson();
+        await loadUserRole();
+        const isEnrolled = await checkEnrollmentOrBlock();
+        if (isEnrolled) {
+            initializeForum();
+        }
     });
 
     function initializeLesson() {
@@ -313,6 +418,7 @@
         currentVideoId = params.get('v');
         const title = params.get('t') || 'عنوان الفيديو';
         currentSubject = params.get('subject') || 'history';
+        currentForumKey = `${normalizeForumKey(currentSubject)}__${normalizeForumKey(title)}`;
 
         document.getElementById('lessonTitle').innerText = title;
         document.getElementById('videoTitle').innerText = title;
@@ -506,6 +612,267 @@
     });
 
     document.getElementById('retryInviteBtn').addEventListener('click', setupInvite);
+
+    function forumPostDoc(postId) {
+        return doc(db, 'lesson-forums', currentForumKey, 'posts', postId);
+    }
+
+    async function loadReplies(postId) {
+        const repliesWrap = document.querySelector(`[data-replies-for="${postId}"]`);
+        if (!repliesWrap) return;
+        const repliesSnap = await getDocs(query(
+            collection(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies'),
+            orderBy('createdAt', 'asc')
+        ));
+        if (!repliesSnap.docs.length) {
+            repliesWrap.innerHTML = '';
+            return;
+        }
+        repliesWrap.innerHTML = repliesSnap.docs.map((replyDoc) => {
+            const reply = replyDoc.data();
+            const likes = Array.isArray(reply.likes) ? reply.likes : [];
+            const likeLabel = likes.includes(currentUser.uid) ? 'إلغاء الإعجاب' : 'إعجاب';
+            const canPin = isModeratorRole();
+            return `
+                <div class="bg-slate-50 rounded-xl p-3 text-right mt-2">
+                    <p class="text-xs font-black text-slate-700">${escapeHtml(reply.authorName || 'مستخدم')}</p>
+                    <p class="text-sm text-slate-700 mt-1">${escapeHtml(reply.text || '')}</p>
+                    <div class="mt-2 flex items-center justify-end gap-3 text-xs">
+                        <button data-action="like-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="font-bold text-primary">${likeLabel} (${likes.length})</button>
+                        <button data-action="report-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="font-bold text-rose-600">بلاغ</button>
+                        ${canPin ? `<button data-action="pin-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="font-bold text-amber-600">${reply.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function renderPosts(postDocs) {
+        const container = document.getElementById('forumPosts');
+        if (!postDocs.length) {
+            container.innerHTML = '<div class="text-center text-slate-400 py-6">لا توجد منشورات بعد</div>';
+            return;
+        }
+        const sortedDocs = [...postDocs].sort((a, b) => {
+            const aPinned = a.data().pinned ? 1 : 0;
+            const bPinned = b.data().pinned ? 1 : 0;
+            if (aPinned !== bPinned) return bPinned - aPinned;
+            const aTime = a.data().createdAt?.toMillis ? a.data().createdAt.toMillis() : 0;
+            const bTime = b.data().createdAt?.toMillis ? b.data().createdAt.toMillis() : 0;
+            return bTime - aTime;
+        });
+        container.innerHTML = sortedDocs.map((postDoc) => {
+            const post = postDoc.data();
+            const likes = Array.isArray(post.likes) ? post.likes : [];
+            const likeLabel = likes.includes(currentUser.uid) ? 'إلغاء الإعجاب' : 'إعجاب';
+            const canPin = isModeratorRole();
+            return `
+                <article class="border border-slate-200 rounded-2xl p-4">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <div class="flex items-center gap-2">
+                            ${post.pinned ? '<span class="text-[10px] px-2 py-1 rounded-full bg-amber-100 text-amber-800 font-black">مثبّت</span>' : ''}
+                            <span class="text-xs text-slate-400">${post.createdAt?.toDate ? post.createdAt.toDate().toLocaleString('ar') : ''}</span>
+                        </div>
+                        <p class="text-sm font-black text-slate-700">${escapeHtml(post.authorName || 'مستخدم')}</p>
+                    </div>
+                    <p class="text-sm text-slate-800 leading-relaxed">${escapeHtml(post.text || '')}</p>
+                    ${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" alt="post" class="mt-3 rounded-xl max-h-72 w-full object-cover"/>` : ''}
+                    <div class="mt-3 flex items-center justify-end gap-3 text-xs">
+                        <button data-action="like-post" data-post-id="${postDoc.id}" class="font-bold text-primary">${likeLabel} (${likes.length})</button>
+                        <button data-action="toggle-reply" data-post-id="${postDoc.id}" class="font-bold text-secondary">رد</button>
+                        <button data-action="report-post" data-post-id="${postDoc.id}" class="font-bold text-rose-600">بلاغ</button>
+                        ${canPin ? `<button data-action="pin-post" data-post-id="${postDoc.id}" class="font-bold text-amber-600">${post.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
+                    </div>
+                    <div class="mt-3 hidden" data-reply-form="${postDoc.id}">
+                        <textarea data-reply-input="${postDoc.id}" rows="2" class="w-full rounded-xl border border-slate-200 p-2 text-sm text-right" placeholder="اكتب ردك..."></textarea>
+                        <div class="mt-2 flex justify-end">
+                            <button data-action="submit-reply" data-post-id="${postDoc.id}" class="px-3 py-2 bg-primary text-white rounded-lg text-xs font-black">إرسال الرد</button>
+                        </div>
+                    </div>
+                    <div data-replies-for="${postDoc.id}" class="mt-3"></div>
+                </article>
+            `;
+        }).join('');
+        await Promise.all(sortedDocs.map((postDoc) => loadReplies(postDoc.id)));
+    }
+
+    function listenForumPosts() {
+        const postsQuery = query(collection(db, 'lesson-forums', currentForumKey, 'posts'), orderBy('createdAt', 'desc'));
+        postsUnsubscribe = onSnapshot(postsQuery, async (snap) => {
+            await renderPosts(snap.docs);
+        });
+    }
+
+    function listenReportsForModerators() {
+        if (!isModeratorRole()) return;
+        const reportsList = document.getElementById('reportsList');
+        const reportsQuery = query(collection(db, 'lesson-forums', currentForumKey, 'reports'), orderBy('createdAt', 'desc'));
+        reportsUnsubscribe = onSnapshot(reportsQuery, (snap) => {
+            if (!snap.docs.length) {
+                reportsList.innerHTML = '<div class="text-sm text-slate-400 text-right">لا توجد بلاغات حالياً</div>';
+                return;
+            }
+            reportsList.innerHTML = snap.docs.map((reportDoc) => {
+                const report = reportDoc.data();
+                const statusBadge = report.status === 'resolved'
+                    ? '<span class="text-[10px] px-2 py-1 rounded-full bg-green-100 text-green-700 font-black">تمت المعالجة</span>'
+                    : '<span class="text-[10px] px-2 py-1 rounded-full bg-rose-100 text-rose-700 font-black">مفتوح</span>';
+                return `
+                    <div class="border border-slate-200 rounded-xl p-3 text-right">
+                        <div class="flex items-center justify-between">
+                            ${statusBadge}
+                            <p class="text-xs text-slate-500">${report.createdAt?.toDate ? report.createdAt.toDate().toLocaleString('ar') : ''}</p>
+                        </div>
+                        <p class="text-sm font-bold text-slate-700 mt-2">بلاغ على ${report.targetType === 'reply' ? 'رد' : 'منشور'}</p>
+                        <p class="text-xs text-slate-600 mt-1">${escapeHtml(report.reason || 'بدون سبب')}</p>
+                        ${report.status !== 'resolved' ? `<div class="mt-2 flex justify-end"><button data-action="resolve-report" data-report-id="${reportDoc.id}" class="px-3 py-2 bg-secondary text-white rounded-lg text-xs font-black">تحديث الحالة: تم الحل</button></div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        });
+    }
+
+    async function initializeForum() {
+        const createBtn = document.getElementById('forumCreatePostBtn');
+        createBtn.addEventListener('click', async () => {
+            const text = document.getElementById('forumPostText').value.trim();
+            const imageUrl = document.getElementById('forumPostImage').value.trim();
+            if (!text) return;
+            await addDoc(collection(db, 'lesson-forums', currentForumKey, 'posts'), {
+                text,
+                imageUrl: imageUrl || '',
+                authorId: currentUser.uid,
+                authorName: currentUser.displayName || currentUser.email?.split('@')[0] || 'مستخدم',
+                subject: currentSubject,
+                lesson: document.getElementById('lessonTitle').innerText,
+                likes: [],
+                pinned: false,
+                createdAt: serverTimestamp()
+            });
+            document.getElementById('forumPostText').value = '';
+            document.getElementById('forumPostImage').value = '';
+        });
+
+        document.getElementById('forumPosts').addEventListener('click', async (event) => {
+            const actionEl = event.target.closest('[data-action]');
+            if (!actionEl) return;
+            const action = actionEl.dataset.action;
+            const postId = actionEl.dataset.postId;
+            const postRef = forumPostDoc(postId);
+            const postSnap = await getDoc(postRef);
+            if (!postSnap.exists()) return;
+            const postData = postSnap.data();
+
+            if (action === 'toggle-reply') {
+                document.querySelector(`[data-reply-form="${postId}"]`)?.classList.toggle('hidden');
+            } else if (action === 'submit-reply') {
+                const replyInput = document.querySelector(`[data-reply-input="${postId}"]`);
+                const text = replyInput?.value?.trim();
+                if (!text) return;
+                await addDoc(collection(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies'), {
+                    text,
+                    authorId: currentUser.uid,
+                    authorName: currentUser.displayName || currentUser.email?.split('@')[0] || 'مستخدم',
+                    likes: [],
+                    pinned: false,
+                    createdAt: serverTimestamp()
+                });
+                replyInput.value = '';
+                await loadReplies(postId);
+                await sendNotification(postData.authorId, 'lesson_reply', `تم الرد على منشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+            } else if (action === 'like-post') {
+                const likes = Array.isArray(postData.likes) ? postData.likes : [];
+                const liked = likes.includes(currentUser.uid);
+                await updateDoc(postRef, { likes: liked ? arrayRemove(currentUser.uid) : arrayUnion(currentUser.uid) });
+                if (!liked) {
+                    await sendNotification(postData.authorId, 'lesson_like', `أعجب أحدهم بمنشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            } else if (action === 'report-post') {
+                const reason = window.prompt('سبب البلاغ؟')?.trim();
+                if (!reason) return;
+                await addDoc(collection(db, 'lesson-forums', currentForumKey, 'reports'), {
+                    targetType: 'post',
+                    postId,
+                    targetAuthorId: postData.authorId || '',
+                    reason,
+                    reporterId: currentUser.uid,
+                    status: 'open',
+                    createdAt: serverTimestamp()
+                });
+            } else if (action === 'pin-post' && isModeratorRole()) {
+                const nextPinned = !postData.pinned;
+                await updateDoc(postRef, {
+                    pinned: nextPinned,
+                    pinnedBy: currentUser.uid,
+                    pinnedAt: serverTimestamp()
+                });
+                if (nextPinned) {
+                    await sendNotification(postData.authorId, 'pinned_post', `تم تثبيت منشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            } else if (action === 'like-reply') {
+                const replyId = actionEl.dataset.replyId;
+                const replyRef = doc(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies', replyId);
+                const replySnap = await getDoc(replyRef);
+                if (!replySnap.exists()) return;
+                const replyData = replySnap.data();
+                const likes = Array.isArray(replyData.likes) ? replyData.likes : [];
+                const liked = likes.includes(currentUser.uid);
+                await updateDoc(replyRef, { likes: liked ? arrayRemove(currentUser.uid) : arrayUnion(currentUser.uid) });
+                await loadReplies(postId);
+                if (!liked) {
+                    await sendNotification(replyData.authorId, 'lesson_like', `أعجب أحدهم بردك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            } else if (action === 'report-reply') {
+                const replyId = actionEl.dataset.replyId;
+                const reason = window.prompt('سبب البلاغ؟')?.trim();
+                if (!reason) return;
+                const replyRef = doc(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies', replyId);
+                const replySnap = await getDoc(replyRef);
+                const replyData = replySnap.exists() ? replySnap.data() : {};
+                await addDoc(collection(db, 'lesson-forums', currentForumKey, 'reports'), {
+                    targetType: 'reply',
+                    postId,
+                    replyId,
+                    targetAuthorId: replyData.authorId || '',
+                    reason,
+                    reporterId: currentUser.uid,
+                    status: 'open',
+                    createdAt: serverTimestamp()
+                });
+            } else if (action === 'pin-reply' && isModeratorRole()) {
+                const replyId = actionEl.dataset.replyId;
+                const replyRef = doc(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies', replyId);
+                const replySnap = await getDoc(replyRef);
+                if (!replySnap.exists()) return;
+                const replyData = replySnap.data();
+                const nextPinned = !replyData.pinned;
+                await updateDoc(replyRef, { pinned: nextPinned, pinnedBy: currentUser.uid, pinnedAt: serverTimestamp() });
+                await loadReplies(postId);
+                if (nextPinned) {
+                    await sendNotification(replyData.authorId, 'pinned_post', `تم تثبيت ردك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            }
+        });
+
+        document.getElementById('reportsList').addEventListener('click', async (event) => {
+            const resolveBtn = event.target.closest('[data-action="resolve-report"]');
+            if (!resolveBtn || !isModeratorRole()) return;
+            const reportRef = doc(db, 'lesson-forums', currentForumKey, 'reports', resolveBtn.dataset.reportId);
+            const reportSnap = await getDoc(reportRef);
+            if (!reportSnap.exists()) return;
+            const report = reportSnap.data();
+            await updateDoc(reportRef, {
+                status: 'resolved',
+                resolvedAt: serverTimestamp(),
+                resolvedBy: currentUser.uid
+            });
+            await sendNotification(report.reporterId, 'report_update', 'تم تحديث حالة البلاغ إلى: تم الحل', `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+            await sendNotification(report.targetAuthorId, 'report_update', 'تمت مراجعة بلاغ متعلق بمشاركتك', `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+        });
+
+        listenForumPosts();
+        listenReportsForModerators();
+    }
 
     document.getElementById('toggleCinemaBtn').addEventListener('click', () => {
         document.body.classList.toggle('cinema-mode');

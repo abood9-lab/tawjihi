@@ -96,6 +96,10 @@
                         <span class="text-primary">ابدأ الآن</span>
                         <span class="text-slate-400">4 وحدات</span>
                     </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="enrollment-status font-black text-red-500" data-subject="history">غير ملتحق</span>
+                        <button type="button" class="enroll-btn px-3 py-1.5 bg-primary text-white rounded-lg font-bold" data-subject="history">التحاق مجاني</button>
+                    </div>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                         <div class="bg-primary h-full w-[70%] rounded-full"></div>
                     </div>
@@ -115,6 +119,10 @@
                     <div class="flex justify-between items-center text-xs font-bold">
                         <span class="text-green-600">محتوى متجدد</span>
                         <span class="text-slate-400">3 محاور</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="enrollment-status font-black text-red-500" data-subject="religion">غير ملتحق</span>
+                        <button type="button" class="enroll-btn px-3 py-1.5 bg-primary text-white rounded-lg font-bold" data-subject="religion">التحاق مجاني</button>
                     </div>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                         <div class="bg-green-500 h-full w-[60%] rounded-full"></div>
@@ -136,6 +144,10 @@
                         <span class="text-purple-600">دروس مركزة</span>
                         <span class="text-slate-400">6 محاور</span>
                     </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="enrollment-status font-black text-red-500" data-subject="arabic">غير ملتحق</span>
+                        <button type="button" class="enroll-btn px-3 py-1.5 bg-primary text-white rounded-lg font-bold" data-subject="arabic">التحاق مجاني</button>
+                    </div>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                         <div class="bg-purple-500 h-full w-[50%] rounded-full"></div>
                     </div>
@@ -155,6 +167,10 @@
                     <div class="flex justify-between items-center text-xs font-bold">
                         <span class="text-amber-600">مناسب لجميع المستويات</span>
                         <span class="text-slate-400">8 وحدات</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="enrollment-status font-black text-red-500" data-subject="english">غير ملتحق</span>
+                        <button type="button" class="enroll-btn px-3 py-1.5 bg-primary text-white rounded-lg font-bold" data-subject="english">التحاق مجاني</button>
                     </div>
                     <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                         <div class="bg-amber-500 h-full w-[65%] rounded-full"></div>
@@ -250,17 +266,10 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
     import { CONFIG } from "./config.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
-        authDomain: "tawj-d1f01.firebaseapp.com",
-        projectId: "tawj-d1f01",
-        storageBucket: "tawj-d1f01.firebasestorage.app",
-        messagingSenderId: "124295262421",
-        appId: "1:124295262421:web:87cd51227a13e0a710725c"
-    };
+    const firebaseConfig = CONFIG.FIREBASE;
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -276,18 +285,69 @@
     const GROQ_API_URL = CONFIG.GROQ.API_URL;
 
     let chatHistory = [];
+    let currentUser = null;
+    const SUBJECTS = ['history', 'religion', 'arabic', 'english'];
+
+    function updateEnrollmentUI(subject, isEnrolled) {
+        const statusEl = document.querySelector(`.enrollment-status[data-subject="${subject}"]`);
+        const enrollBtn = document.querySelector(`.enroll-btn[data-subject="${subject}"]`);
+        if (statusEl) {
+            statusEl.textContent = isEnrolled ? 'ملتحق' : 'غير ملتحق';
+            statusEl.classList.toggle('text-green-600', isEnrolled);
+            statusEl.classList.toggle('text-red-500', !isEnrolled);
+        }
+        if (enrollBtn) {
+            enrollBtn.textContent = isEnrolled ? 'تم الالتحاق' : 'التحاق مجاني';
+            enrollBtn.disabled = isEnrolled;
+            enrollBtn.classList.toggle('opacity-60', isEnrolled);
+            enrollBtn.classList.toggle('cursor-not-allowed', isEnrolled);
+        }
+    }
+
+    async function refreshEnrollments() {
+        if (!currentUser) return;
+        await Promise.all(SUBJECTS.map(async (subject) => {
+            const enrollmentId = `${currentUser.uid}_${subject}`;
+            const snap = await getDoc(doc(db, 'enrollments', enrollmentId));
+            updateEnrollmentUI(subject, snap.exists());
+        }));
+    }
+
+    async function enrollInSubject(subject) {
+        if (!currentUser) return;
+        const enrollmentId = `${currentUser.uid}_${subject}`;
+        await setDoc(doc(db, 'enrollments', enrollmentId), {
+            userId: currentUser.uid,
+            subject,
+            status: 'active',
+            enrolledAt: serverTimestamp()
+        }, { merge: true });
+        updateEnrollmentUI(subject, true);
+    }
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            currentUser = user;
             // جلب الصورة الشخصية لـ Header
             if(user.photoURL) document.getElementById('navAvatar').src = user.photoURL;
             const snap = await getDoc(doc(db, "users", user.uid));
             if (snap.exists() && snap.data().photoURL) {
                 document.getElementById('navAvatar').src = snap.data().photoURL;
             }
+            await refreshEnrollments();
         } else {
             window.location.href = 'signup.html';
         }
+    });
+
+    document.querySelectorAll('.enroll-btn').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+            try {
+                await enrollInSubject(btn.dataset.subject);
+            } catch (e) {
+                console.error('Enrollment error', e);
+            }
+        });
     });
 
     openAIChatBtn.addEventListener('click', () => {
