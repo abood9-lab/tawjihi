@@ -121,10 +121,12 @@ service cloud.firestore {
     }
 
     match /enrollments/{enrollmentId} {
-      allow get, list: if isSignedIn() && (
-        resource.data.userId == request.auth.uid ||
-        isModeratorRole()
+      allow get: if isSignedIn() && (
+        isModeratorRole() ||
+        enrollmentId.matches('^' + request.auth.uid + '_.*$') ||
+        (resource.data.userId is string && resource.data.userId == request.auth.uid)
       );
+      allow list: if isSignedIn() && isModeratorRole();
       allow create, update: if isSignedIn() &&
         request.resource.data.userId == request.auth.uid &&
         request.resource.data.subject is string;
