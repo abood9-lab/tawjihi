@@ -43,6 +43,7 @@
         .forum-action { color: #264b8b; font-weight: 700; }
         .forum-action-danger { color: #ce3a42; font-weight: 700; }
         .forum-action-muted { color: #1f2937; font-weight: 700; }
+        .forum-action-secondary { color: #8090a7; font-weight: 700; }
         .forum-body-text { overflow-wrap: anywhere; word-break: break-word; }
         .forum-touch-target { min-height: 44px; min-width: 44px; }
         .forum-divider { border-color: #d7deea; }
@@ -52,16 +53,23 @@
         .forum-modal-input { background: #f8faff; border: 1px solid #dbe3ef; color: #1e293b; }
         .forum-modal-input::placeholder { color: #8ea0ba; }
         .forum-composer-divider { border-color: #d7deea; }
+        .forum-inline-actions button { flex: 1; justify-content: center; min-width: 0; }
         @media (max-width: 640px) {
-            .forum-shell { border-radius: 1.25rem; }
+            .forum-shell { border-radius: 1.25rem; padding: 0.65rem; }
             .forum-composer-card, .forum-post-card { border-radius: 1rem; }
             .forum-avatar { width: 42px; height: 42px; font-size: 1.1rem; }
-            .forum-post-btn { padding-inline: 1rem; min-height: 44px; }
-            .forum-action-row { flex-wrap: wrap; gap: 0.5rem; }
+            .forum-post-btn { padding-inline: 1rem; min-height: 44px; min-width: 120px; border-radius: 0.7rem; }
+            .forum-action-row { flex-wrap: wrap; gap: 0.25rem; }
             .forum-menu { min-width: 140px; right: 0; left: auto; }
-            .forum-mobile-tight { font-size: 0.8125rem; }
+            .forum-mobile-tight { font-size: 0.72rem; }
             .forum-modal-card { width: 100%; border-radius: 1.5rem 1.5rem 0 0; padding: 1rem; max-height: 92dvh; overflow-y: auto; }
             .forum-modal-actions { position: sticky; bottom: 0; background: #fff; padding-top: 0.75rem; }
+            .forum-composer-actions { align-items: center; }
+            .forum-composer-media-actions { gap: 0.35rem; }
+            .forum-composer-media-actions .forum-touch-target { min-width: 0; padding-inline: 0.45rem; }
+            .forum-inline-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); width: 100%; }
+            .forum-inline-actions button .material-symbols-outlined { font-size: 1.15rem; }
+            .forum-inline-actions button { min-height: 38px; padding-inline: 0.15rem; }
         }
     </style>
 </head>
@@ -189,8 +197,8 @@
                         <input id="forumPostImage" type="url" class="forum-input hidden w-full rounded-2xl p-3 text-right text-sm" placeholder="رابط صورة (https://...)"/>
                         <input id="forumPostVideo" type="url" class="forum-input hidden w-full rounded-2xl p-3 text-right text-sm" placeholder="رابط فيديو (YouTube / MP4)"/>
                         <hr class="forum-composer-divider">
-                        <div class="flex items-center justify-between gap-2.5 sm:gap-3">
-                            <div class="flex items-center gap-3 sm:gap-4">
+                        <div class="forum-composer-actions flex items-center justify-between gap-2.5 sm:gap-3">
+                            <div class="forum-composer-media-actions flex items-center gap-3 sm:gap-4">
                             <button id="forumToggleImageInput" class="forum-action forum-touch-target inline-flex items-center justify-center sm:justify-start gap-2 text-sm rounded-xl px-3">
                                 <span class="material-symbols-outlined text-base">image</span>
                                 صورة
@@ -845,10 +853,10 @@
                         </span>
                     </div>
                     <hr class="forum-divider mt-4">
-                    <div class="mt-3 flex items-center justify-between gap-2 text-sm forum-action-row forum-mobile-tight">
+                    <div class="mt-3 flex items-center justify-between gap-2 text-sm forum-action-row forum-mobile-tight forum-inline-actions">
                         <button data-action="like-post" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">thumb_up</span>اعجبني</button>
                         <button data-action="toggle-reply" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">chat_bubble</span>التعليقات</button>
-                        <button data-action="share-post" data-post-id="${postDoc.id}" class="forum-subtle forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">reply</span>مشاركات</button>
+                        <button data-action="share-post" data-post-id="${postDoc.id}" class="forum-action-secondary forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">share</span>مشاركات</button>
                         <button data-action="report-post" data-post-id="${postDoc.id}" class="forum-action-muted forum-touch-target px-2 rounded-lg">إبلاغ</button>
                         ${canPin ? `<button data-action="pin-post" data-post-id="${postDoc.id}" class="font-bold text-amber-700 forum-touch-target px-2 rounded-lg">${post.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
                     </div>
