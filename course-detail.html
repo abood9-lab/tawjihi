@@ -32,24 +32,26 @@
         .toast.error { background-color: #ef4444; }
         .toast.info { background-color: #3b82f6; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .forum-shell { background: radial-gradient(120% 120% at 50% 0%, #0f254f 0%, #091734 58%, #071329 100%); border: 1px solid #1f325b; }
-        .forum-composer-card, .forum-post-card { background: #0c1f43; border: 1px solid #1b315d; border-radius: 1.5rem; }
-        .forum-input { background: #14294f; border: 1px solid #1f3560; color: #e2e8f0; }
-        .forum-input::placeholder { color: #94a3b8; }
-        .forum-subtle { color: #94a3b8; }
-        .forum-avatar { width: 56px; height: 56px; border-radius: 9999px; background: #fb5b1f; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 2px solid #2a4374; }
-        .forum-post-btn { background: #2b4fa5; border: 1px solid #6f90d7; color: #d5e4ff; }
+        .forum-shell { background: #f4f6fb; border: 1px solid #dde4f0; }
+        .forum-composer-card, .forum-post-card { background: #fff; border: 1px solid #dbe3ef; border-radius: 1.2rem; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04); }
+        .forum-input { background: #f7f9fe; border: 1px solid #d9e2f0; color: #1e293b; }
+        .forum-input::placeholder { color: #8a97ab; }
+        .forum-subtle { color: #8b98ae; }
+        .forum-avatar { width: 56px; height: 56px; border-radius: 9999px; background: linear-gradient(135deg, #dbe7ff 0%, #c2d4ff 100%); color: #4065a8; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #cfd9ea; }
+        .forum-post-btn { background: #8399bf; border: 1px solid #7c92b7; color: #fff; }
         .forum-post-btn:disabled { opacity: .65; cursor: not-allowed; }
-        .forum-action { color: #9bb0d7; font-weight: 700; }
-        .forum-action-danger { color: #ff5d62; font-weight: 700; }
+        .forum-action { color: #264b8b; font-weight: 700; }
+        .forum-action-danger { color: #ce3a42; font-weight: 700; }
+        .forum-action-muted { color: #1f2937; font-weight: 700; }
         .forum-body-text { overflow-wrap: anywhere; word-break: break-word; }
         .forum-touch-target { min-height: 44px; min-width: 44px; }
-        .forum-divider { border-color: #1f3562; }
-        .forum-menu { background: #0a1a38; border: 1px solid #243c6c; }
-        .forum-reply-box { background: #102447; border: 1px solid #243c6c; }
-        .forum-modal-card { background: #0c1f43; border: 1px solid #274577; }
-        .forum-modal-input { background: #132a52; border: 1px solid #2d4f86; color: #e2e8f0; }
-        .forum-modal-input::placeholder { color: #95a9cf; }
+        .forum-divider { border-color: #d7deea; }
+        .forum-menu { background: #fff; border: 1px solid #d8e0ec; box-shadow: 0 16px 28px rgba(15, 23, 42, 0.1); }
+        .forum-reply-box { background: #f7f9fd; border: 1px solid #dbe4f0; }
+        .forum-modal-card { background: #fff; border: 1px solid #dce4f1; }
+        .forum-modal-input { background: #f8faff; border: 1px solid #dbe3ef; color: #1e293b; }
+        .forum-modal-input::placeholder { color: #8ea0ba; }
+        .forum-composer-divider { border-color: #d7deea; }
         @media (max-width: 640px) {
             .forum-shell { border-radius: 1.25rem; }
             .forum-composer-card, .forum-post-card { border-radius: 1rem; }
@@ -59,7 +61,7 @@
             .forum-menu { min-width: 140px; right: 0; left: auto; }
             .forum-mobile-tight { font-size: 0.8125rem; }
             .forum-modal-card { width: 100%; border-radius: 1.5rem 1.5rem 0 0; padding: 1rem; max-height: 92dvh; overflow-y: auto; }
-            .forum-modal-actions { position: sticky; bottom: 0; background: #0c1f43; padding-top: 0.75rem; }
+            .forum-modal-actions { position: sticky; bottom: 0; background: #fff; padding-top: 0.75rem; }
         }
     </style>
 </head>
@@ -175,7 +177,7 @@
 
         <section class="forum-shell rounded-[2rem] shadow-sm p-3 sm:p-4 md:p-6 mt-8">
             <div class="mb-5 md:mb-6 text-right">
-                <h2 class="text-xl sm:text-2xl font-black text-white">منتدى الدرس</h2>
+                <h2 class="text-xl sm:text-2xl font-black text-slate-800">منتدى الدرس</h2>
                 <p class="forum-subtle text-sm">منشورات وردود مرتبطة بالمادة والدرس الحالي.</p>
             </div>
 
@@ -183,14 +185,22 @@
                 <div class="flex items-start gap-2.5 sm:gap-3">
                     <div id="forumComposerAvatar" class="forum-avatar">؟</div>
                     <div class="flex-1 space-y-2.5 sm:space-y-3">
-                        <textarea id="forumPostText" class="forum-input w-full rounded-2xl p-3.5 sm:p-4 text-right text-sm sm:text-base forum-body-text" rows="3" placeholder="شو على بالك اليوم؟"></textarea>
+                        <textarea id="forumPostText" class="forum-input w-full rounded-2xl p-3.5 sm:p-4 text-right text-sm sm:text-base forum-body-text bg-white border-0" rows="3" placeholder="ماذا يخطر في بالك ؟"></textarea>
                         <input id="forumPostImage" type="url" class="forum-input hidden w-full rounded-2xl p-3 text-right text-sm" placeholder="رابط صورة (https://...)"/>
-                        <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
+                        <input id="forumPostVideo" type="url" class="forum-input hidden w-full rounded-2xl p-3 text-right text-sm" placeholder="رابط فيديو (YouTube / MP4)"/>
+                        <hr class="forum-composer-divider">
+                        <div class="flex items-center justify-between gap-2.5 sm:gap-3">
+                            <div class="flex items-center gap-3 sm:gap-4">
                             <button id="forumToggleImageInput" class="forum-action forum-touch-target inline-flex items-center justify-center sm:justify-start gap-2 text-sm rounded-xl px-3">
                                 <span class="material-symbols-outlined text-base">image</span>
                                 صورة
                             </button>
-                            <button id="forumCreatePostBtn" class="forum-post-btn forum-touch-target inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-2.5 rounded-2xl font-black">
+                            <button id="forumToggleVideoInput" class="forum-action forum-touch-target inline-flex items-center justify-center sm:justify-start gap-2 text-sm rounded-xl px-3">
+                                <span class="material-symbols-outlined text-base">videocam</span>
+                                فيديو
+                            </button>
+                            </div>
+                            <button id="forumCreatePostBtn" class="forum-post-btn forum-touch-target inline-flex items-center justify-center gap-2 w-auto min-w-[120px] px-6 py-2.5 rounded-xl font-black">
                                 <span class="material-symbols-outlined text-base">send</span>
                                 نشر
                             </button>
@@ -204,7 +214,7 @@
             </div>
 
             <div id="moderationPanel" class="hidden mt-8 border-t forum-divider pt-6">
-                <h3 class="text-lg font-black text-white mb-3 text-right">لوحة البلاغات (مشرف)</h3>
+                <h3 class="text-lg font-black text-slate-800 mb-3 text-right">لوحة البلاغات (مشرف)</h3>
                 <div id="reportsList" class="space-y-3"></div>
             </div>
         </section>
@@ -316,10 +326,10 @@
     <div class="forum-modal-card w-full md:max-w-md rounded-t-3xl md:rounded-3xl p-5 md:p-6 shadow-2xl">
         <div class="flex items-start justify-between gap-3">
             <div class="text-right">
-                <h3 id="forumActionModalTitle" class="text-lg font-black text-white">إجراء</h3>
+                <h3 id="forumActionModalTitle" class="text-lg font-black text-slate-900">إجراء</h3>
                 <p id="forumActionModalMessage" class="text-sm forum-subtle mt-1">هل أنت متأكد؟</p>
             </div>
-            <button id="forumActionModalClose" class="forum-action forum-touch-target p-1 rounded-lg hover:bg-white/10">
+            <button id="forumActionModalClose" class="forum-action forum-touch-target p-1 rounded-lg hover:bg-slate-100">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
@@ -328,7 +338,7 @@
         </div>
         <div class="mt-5 flex items-center gap-2 forum-modal-actions">
             <button id="forumActionModalConfirm" class="forum-post-btn forum-touch-target w-full px-4 py-2.5 rounded-xl font-black text-sm">تأكيد</button>
-            <button id="forumActionModalCancel" class="forum-touch-target w-full px-4 py-2.5 rounded-xl bg-slate-700 text-slate-100 font-black text-sm">إلغاء</button>
+            <button id="forumActionModalCancel" class="forum-touch-target w-full px-4 py-2.5 rounded-xl bg-slate-200 text-slate-700 font-black text-sm">إلغاء</button>
         </div>
     </div>
 </div>
@@ -367,7 +377,8 @@
         updateDoc,
         deleteDoc,
         arrayUnion,
-        arrayRemove
+        arrayRemove,
+        increment
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
     import { CONFIG } from "./config.js";
 
@@ -763,12 +774,12 @@
             const canPin = isModeratorRole();
             return `
                 <div class="forum-reply-box rounded-xl p-3 text-right mt-2">
-                    <p class="text-xs font-black text-slate-100 forum-body-text">${escapeHtml(reply.authorName || 'مستخدم')}</p>
-                    <p class="text-sm text-slate-200 mt-1 forum-body-text">${escapeHtml(reply.text || '')}</p>
+                    <p class="text-xs font-black text-slate-700 forum-body-text">${escapeHtml(reply.authorName || 'مستخدم')}</p>
+                    <p class="text-sm text-slate-700 mt-1 forum-body-text">${escapeHtml(reply.text || '')}</p>
                     <div class="mt-2 flex items-center justify-end gap-2 text-xs forum-action-row">
                         <button data-action="like-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg">${likeLabel} (${likes.length})</button>
-                        <button data-action="report-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="forum-action-danger forum-touch-target px-2 rounded-lg">بلاغ</button>
-                        ${canPin ? `<button data-action="pin-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="font-bold text-amber-300 forum-touch-target px-2 rounded-lg">${reply.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
+                        <button data-action="report-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="forum-action-muted forum-touch-target px-2 rounded-lg">بلاغ</button>
+                        ${canPin ? `<button data-action="pin-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="font-bold text-amber-700 forum-touch-target px-2 rounded-lg">${reply.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
                     </div>
                 </div>
             `;
@@ -796,13 +807,14 @@
             const canDelete = post.authorId === currentUser.uid || isModeratorRole();
             const authorName = escapeHtml(post.authorName || 'مستخدم');
             const authorInitial = escapeHtml(avatarInitial(post.authorName || 'مستخدم'));
+            const commentsCount = Number(post.replyCount || 0);
             return `
-                <article class="forum-post-card p-3.5 sm:p-4 md:p-5">
+                <article id="post-${postDoc.id}" class="forum-post-card p-3.5 sm:p-4 md:p-5">
                     <div class="flex items-start justify-between gap-3 mb-3">
                         <div class="flex items-start gap-2.5 sm:gap-3 min-w-0">
                             <div class="forum-avatar !w-10 !h-10 sm:!w-12 sm:!h-12 !text-xl sm:!text-2xl">${authorInitial}</div>
                             <div class="text-right">
-                                <p class="text-base sm:text-lg font-black text-white forum-body-text">${authorName}</p>
+                                <p class="text-base sm:text-lg font-black text-slate-900 forum-body-text">${authorName}</p>
                                 <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                                     <span class="text-xs forum-subtle">${formatForumTime(post.createdAt)}</span>
                                     ${post.pinned ? '<span class="text-[10px] px-2 py-1 rounded-full bg-amber-200 text-amber-900 font-black">مثبّت</span>' : ''}
@@ -811,25 +823,34 @@
                         </div>
                         ${canDelete ? `
                         <div class="relative">
-                            <button data-action="toggle-post-menu" data-post-id="${postDoc.id}" class="forum-action forum-touch-target p-2 rounded-lg hover:bg-white/10">
+                            <button data-action="toggle-post-menu" data-post-id="${postDoc.id}" class="forum-action forum-touch-target p-2 rounded-lg hover:bg-slate-100">
                                 <span class="material-symbols-outlined">more_horiz</span>
                             </button>
                             <div data-post-menu="${postDoc.id}" class="forum-menu hidden absolute right-0 top-10 min-w-[160px] rounded-xl p-2 z-10">
-                                <button data-action="delete-post" data-post-id="${postDoc.id}" class="forum-action-danger w-full text-right px-3 py-2 rounded-lg hover:bg-rose-500/10 inline-flex items-center justify-end gap-2">
+                                <button data-action="delete-post" data-post-id="${postDoc.id}" class="forum-action-danger w-full text-right px-3 py-2 rounded-lg hover:bg-rose-50 inline-flex items-center justify-end gap-2">
                                     حذف المنشور
                                     <span class="material-symbols-outlined text-base">delete</span>
                                 </button>
                             </div>
                         </div>` : '<div></div>'}
                     </div>
-                    <p class="text-sm sm:text-base text-slate-100 leading-relaxed forum-body-text">${escapeHtml(post.text || '')}</p>
+                    <p class="text-sm sm:text-base text-slate-800 leading-relaxed forum-body-text">${escapeHtml(post.text || '')}</p>
                     ${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" alt="post" class="mt-3 rounded-xl max-h-72 w-full object-cover"/>` : ''}
+                    ${post.videoUrl ? `<a href="${escapeHtml(post.videoUrl)}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center gap-2 text-sm text-primary font-bold"><span class="material-symbols-outlined text-base">videocam</span>رابط الفيديو</a>` : ''}
+                    <div class="mt-4 flex items-center justify-between text-[1.1rem] sm:text-lg font-black text-slate-500">
+                        <span>${commentsCount} التعليقات</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <span>${likes.length} إعجاب</span>
+                            <span class="material-symbols-outlined text-primary text-2xl">thumb_up</span>
+                        </span>
+                    </div>
                     <hr class="forum-divider mt-4">
-                    <div class="mt-3 flex items-center justify-start gap-5 text-sm forum-action-row forum-mobile-tight">
-                        <button data-action="like-post" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">favorite</span>${likes.length}</button>
-                        <button data-action="toggle-reply" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">chat_bubble</span>رد</button>
-                        <button data-action="report-post" data-post-id="${postDoc.id}" class="forum-action-danger forum-touch-target px-2 rounded-lg">بلاغ</button>
-                        ${canPin ? `<button data-action="pin-post" data-post-id="${postDoc.id}" class="font-bold text-amber-300 forum-touch-target px-2 rounded-lg">${post.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
+                    <div class="mt-3 flex items-center justify-between gap-2 text-sm forum-action-row forum-mobile-tight">
+                        <button data-action="like-post" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">thumb_up</span>اعجبني</button>
+                        <button data-action="toggle-reply" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">chat_bubble</span>التعليقات</button>
+                        <button data-action="share-post" data-post-id="${postDoc.id}" class="forum-subtle forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">reply</span>مشاركات</button>
+                        <button data-action="report-post" data-post-id="${postDoc.id}" class="forum-action-muted forum-touch-target px-2 rounded-lg">إبلاغ</button>
+                        ${canPin ? `<button data-action="pin-post" data-post-id="${postDoc.id}" class="font-bold text-amber-700 forum-touch-target px-2 rounded-lg">${post.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
                     </div>
                     <div class="mt-3 hidden" data-reply-form="${postDoc.id}">
                         <textarea data-reply-input="${postDoc.id}" rows="2" class="forum-input w-full rounded-xl p-3 text-sm text-right forum-body-text" placeholder="اكتب ردك..."></textarea>
@@ -887,6 +908,9 @@
         document.getElementById('forumToggleImageInput').addEventListener('click', () => {
             document.getElementById('forumPostImage').classList.toggle('hidden');
         });
+        document.getElementById('forumToggleVideoInput').addEventListener('click', () => {
+            document.getElementById('forumPostVideo').classList.toggle('hidden');
+        });
 
         const forumActionModal = document.getElementById('forumActionModal');
         const forumActionModalInput = document.getElementById('forumActionModalInput');
@@ -909,20 +933,24 @@
         createBtn.addEventListener('click', async () => {
             const text = document.getElementById('forumPostText').value.trim();
             const imageUrl = document.getElementById('forumPostImage').value.trim();
+            const videoUrl = document.getElementById('forumPostVideo').value.trim();
             if (!text) return;
             await addDoc(collection(db, 'lesson-forums', currentForumKey, 'posts'), {
                 text,
                 imageUrl: imageUrl || '',
+                videoUrl: videoUrl || '',
                 authorId: currentUser.uid,
                 authorName: currentUser.displayName || currentUser.email?.split('@')[0] || 'مستخدم',
                 subject: currentSubject,
                 lesson: document.getElementById('lessonTitle').innerText,
                 likes: [],
+                replyCount: 0,
                 pinned: false,
                 createdAt: serverTimestamp()
             });
             document.getElementById('forumPostText').value = '';
             document.getElementById('forumPostImage').value = '';
+            document.getElementById('forumPostVideo').value = '';
         });
 
         document.getElementById('forumPosts').addEventListener('click', async (event) => {
@@ -972,6 +1000,7 @@
                     pinned: false,
                     createdAt: serverTimestamp()
                 });
+                await updateDoc(postRef, { replyCount: increment(1) });
                 replyInput.value = '';
                 await loadReplies(postId);
                 await sendNotification(postData.authorId, 'lesson_reply', `تم الرد على منشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
@@ -981,6 +1010,14 @@
                 await updateDoc(postRef, { likes: liked ? arrayRemove(currentUser.uid) : arrayUnion(currentUser.uid) });
                 if (!liked) {
                     await sendNotification(postData.authorId, 'lesson_like', `أعجب أحدهم بمنشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            } else if (action === 'share-post') {
+                const shareUrl = `${window.location.origin}${window.location.pathname}?subject=${encodeURIComponent(currentSubject)}#post-${postId}`;
+                if (navigator.share) {
+                    await navigator.share({ title: 'منشور من منتدى الدرس', url: shareUrl });
+                } else {
+                    await navigator.clipboard.writeText(shareUrl);
+                    showToast('تم نسخ رابط المشاركة', 'success');
                 }
             } else if (action === 'report-post') {
                 const reason = (await openForumActionModal({
