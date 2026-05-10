@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 3001;
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 const GROQ_API_URL = process.env.GROQ_API_URL || 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY || '';
+const YOUTUBE_API_URL = process.env.YOUTUBE_API_URL || 'https://www.googleapis.com/youtube/v3/search';
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || '';
 const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
 const SUBSCRIPTIONS_FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'push-subscriptions.json');
@@ -186,6 +188,50 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
+app.get('/api/youtube/search', async (req, res) => {
+    try {
+        const rawQuery = (req.query.q || '').toString().trim();
+        const requestedMax = Number(req.query.maxResults || 9);
+        const maxResults = Number.isFinite(requestedMax)
+            ? Math.min(15, Math.max(1, requestedMax))
+            : 9;
+
+        if (!rawQuery) {
+            return res.status(400).json({ error: 'Query parameter `q` is required' });
+        }
+
+        if (!YOUTUBE_API_KEY) {
+            return res.status(500).json({ error: 'YOUTUBE_API_KEY is missing from environment' });
+        }
+
+        const apiUrl = new URL(YOUTUBE_API_URL);
+        apiUrl.searchParams.set('part', 'snippet');
+        apiUrl.searchParams.set('type', 'video');
+        apiUrl.searchParams.set('maxResults', String(maxResults));
+        apiUrl.searchParams.set('q', rawQuery);
+        apiUrl.searchParams.set('key', YOUTUBE_API_KEY);
+
+        const ytResponse = await fetch(apiUrl.toString(), {
+            method: 'GET',
+            headers: { Accept: 'application/json' }
+        });
+        const data = await ytResponse.json();
+
+        if (!ytResponse.ok || data.error) {
+            return res.status(ytResponse.status || 502).json({
+                error: 'Failed to fetch YouTube results',
+                details: data?.error?.message || 'Unknown YouTube API error'
+            });
+        }
+
+        const items = Array.isArray(data.items) ? data.items : [];
+        return res.json({ success: true, items });
+    } catch (error) {
+        console.error('YouTube Search Error:', error);
+        return res.status(500).json({ error: 'Internal server error', message: error.message });
+    }
+});
+
 app.use((err, req, res, next) => {
     console.error('Unhandled Error:', err);
     res.status(500).json({ error: 'Internal server error', message: err.message });
@@ -197,6 +243,7 @@ app.listen(PORT, () => {
     │  🚀 TawjihiGuide API Server Running │
     │  Server: http://localhost:${PORT}    │
     │  Chat:   /api/chat                  │
+    │  YT:     /api/youtube/search        │
     │  Push:   /api/subscribe             │
     │  Health: /api/health                │
     └─────────────────────────────────────┘

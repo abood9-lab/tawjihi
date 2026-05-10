@@ -23,8 +23,7 @@ export const CONFIG = {
 
     // YouTube API Configuration
     YOUTUBE: {
-        API_KEY: 'AIzaSyDcB8PWSEw8a9nzjPWqyi2y4OhlWqtEPtw',
-        API_URL: 'https://www.googleapis.com/youtube/v3/search'
+        API_URL: 'http://localhost:3001/api/youtube/search'
     },
 
     // Cloudinary Configuration

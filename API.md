@@ -59,6 +59,41 @@ POST /api/chat
 
 ---
 
+### 3. YouTube Search Endpoint
+```
+GET /api/youtube/search?q=<search-term>&maxResults=9
+```
+
+**المعاملات:**
+- `q` (إلزامي): نص البحث
+- `maxResults` (اختياري): عدد النتائج (1 - 15)
+
+**الرد الناجح:**
+```json
+{
+  "success": true,
+  "items": [
+    {
+      "id": { "videoId": "abc123" },
+      "snippet": {
+        "title": "شرح الدرس",
+        "channelTitle": "قناة تعليمية"
+      }
+    }
+  ]
+}
+```
+
+**رد الخطأ:**
+```json
+{
+  "error": "Failed to fetch YouTube results",
+  "details": "..."
+}
+```
+
+---
+
 ## 🔧 معاملات الطلب (Request Parameters)
 
 ### Messages Array
@@ -174,6 +209,7 @@ console.log(data.message);
 ### متغيرات البيئة المطلوبة:
 ```env
 GROQ_API_KEY=your_api_key_here
+YOUTUBE_API_KEY=your_youtube_api_key_here
 PORT=3001
 NODE_ENV=development
 ```
