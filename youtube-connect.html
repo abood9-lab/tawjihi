@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TawjihiGuide - ربط YouTube</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body { font-family: 'Noto Sans Arabic', sans-serif; background: #f8f9ff; }
+        .glass-header { background: rgba(255,255,255,.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .active-scale:active { transform: scale(.96); }
+        .video-card { transition: transform .2s ease, box-shadow .2s ease; }
+        .video-card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(15,23,42,.12); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-900 pb-16">
+    <header class="fixed top-0 w-full z-40 h-16 border-b border-slate-200 glass-header flex items-center justify-between px-4 md:px-8">
+        <div class="flex items-center gap-3">
+            <a href="dashboard.html" class="p-2 rounded-full hover:bg-slate-100 active-scale" title="رجوع">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <span class="text-lg md:text-xl font-black text-primary">ربط YouTube</span>
+        </div>
+        <a href="course-detail.html" class="text-xs md:text-sm font-bold text-primary bg-blue-50 px-3 py-2 rounded-xl">الدروس</a>
+    </header>
+
+    <main class="pt-24 px-4 md:px-8 max-w-6xl mx-auto space-y-6">
+        <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7">
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black text-slate-800">ربط حسابك على YouTube</h1>
+                    <p class="text-sm text-slate-500 mt-2">اضغط الزر لربط الحساب ثم ارفع فيديوهاتك مباشرة من الموقع.</p>
+                </div>
+                <button id="connectYoutubeBtn" class="active-scale px-5 py-3 rounded-2xl bg-primary text-white font-black">ربط الحساب</button>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-sm">
+                <span id="statusDot" class="w-3 h-3 rounded-full bg-amber-400"></span>
+                <span id="connectStatus" class="font-bold text-slate-700">جاري التحقق من حالة الربط...</span>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-black text-slate-800">رفع فيديو جديد</h2>
+                <span class="text-xs text-slate-500">الحد الحالي: 25MB</span>
+            </div>
+            <form id="uploadForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:col-span-2">
+                    <label class="text-xs font-black text-slate-500">عنوان الفيديو</label>
+                    <input id="videoTitle" type="text" class="mt-1 w-full rounded-xl border-slate-200" placeholder="مثال: شرح الوحدة الأولى" required />
+                </div>
+                <div class="md:col-span-2">
+                    <label class="text-xs font-black text-slate-500">الوصف</label>
+                    <textarea id="videoDescription" class="mt-1 w-full rounded-xl border-slate-200" rows="3" placeholder="أضف وصفًا مختصرًا"></textarea>
+                </div>
+                <div>
+                    <label class="text-xs font-black text-slate-500">الخصوصية</label>
+                    <select id="videoPrivacy" class="mt-1 w-full rounded-xl border-slate-200">
+                        <option value="unlisted">غير مدرج</option>
+                        <option value="public">عام</option>
+                        <option value="private">خاص</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-black text-slate-500">ملف الفيديو</label>
+                    <input id="videoFile" type="file" accept="video/*" class="mt-1 w-full rounded-xl border-slate-200" required />
+                </div>
+                <div class="md:col-span-2">
+                    <button id="uploadBtn" type="submit" class="active-scale w-full md:w-auto px-6 py-3 rounded-2xl bg-secondary text-white font-black">رفع الفيديو</button>
+                </div>
+            </form>
+            <p id="uploadStatus" class="mt-3 text-sm font-bold text-slate-500"></p>
+        </section>
+
+        <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-black text-slate-800">فيديوهاتي</h2>
+                <button id="refreshMyVideosBtn" class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-2 rounded-xl">تحديث</button>
+            </div>
+            <div id="myVideosGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div class="col-span-full text-center text-slate-400 py-8">اربط حسابك لعرض فيديوهاتك.</div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 md:p-7">
+            <h2 class="text-xl font-black text-slate-800 mb-4">فيديوهات الآخرين (بحث)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 mb-4">
+                <input id="discoverQuery" type="text" class="w-full rounded-xl border-slate-200" placeholder="ابحث: رياضيات توجيهي، فيزياء..." />
+                <button id="searchDiscoverBtn" class="active-scale px-5 py-3 rounded-2xl bg-primary text-white font-black">بحث</button>
+            </div>
+            <div id="discoverGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div class="col-span-full text-center text-slate-400 py-8">ابدأ بكتابة كلمة بحث.</div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+        import { CONFIG } from "./config.js";
+
+        const app = initializeApp(CONFIG.FIREBASE);
+        const auth = getAuth(app);
+
+        const SEARCH_API = CONFIG?.YOUTUBE?.API_URL || `${window.location.origin}/api/youtube/search`;
+        const SERVER_BASE = CONFIG?.YOUTUBE?.SERVER_BASE_URL || new URL(SEARCH_API, window.location.origin).origin;
+
+        const connectBtn = document.getElementById('connectYoutubeBtn');
+        const statusDot = document.getElementById('statusDot');
+        const connectStatus = document.getElementById('connectStatus');
+        const uploadForm = document.getElementById('uploadForm');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const myVideosGrid = document.getElementById('myVideosGrid');
+        const refreshMyVideosBtn = document.getElementById('refreshMyVideosBtn');
+        const discoverQuery = document.getElementById('discoverQuery');
+        const searchDiscoverBtn = document.getElementById('searchDiscoverBtn');
+        const discoverGrid = document.getElementById('discoverGrid');
+
+        let currentUid = null;
+        let isConnected = false;
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+        }
+
+        function setConnectionState(connected, text) {
+            isConnected = connected;
+            statusDot.className = `w-3 h-3 rounded-full ${connected ? 'bg-emerald-500' : 'bg-amber-400'}`;
+            connectStatus.textContent = text;
+            uploadBtn.disabled = !connected;
+            uploadBtn.classList.toggle('opacity-50', !connected);
+            uploadBtn.classList.toggle('cursor-not-allowed', !connected);
+        }
+
+        async function fetchJson(url, options = {}) {
+            const response = await fetch(url, options);
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data?.details || data?.error || 'طلب فشل');
+            }
+            return data;
+        }
+
+        async function checkConnectionStatus() {
+            if (!currentUid) return;
+            try {
+                const data = await fetchJson(`${SERVER_BASE}/api/youtube/connect/status?userId=${encodeURIComponent(currentUid)}`);
+                if (data.connected) {
+                    setConnectionState(true, '✅ الحساب مربوط وجاهز للرفع');
+                } else {
+                    setConnectionState(false, '⚠️ الحساب غير مربوط بعد');
+                }
+            } catch (error) {
+                setConnectionState(false, `⚠️ ${error.message}`);
+            }
+        }
+
+        function renderVideoCards(container, items, emptyText) {
+            if (!Array.isArray(items) || !items.length) {
+                container.innerHTML = `<div class="col-span-full text-center text-slate-400 py-8">${escapeHtml(emptyText)}</div>`;
+                return;
+            }
+            container.innerHTML = items.map((item) => {
+                const videoId = item?.id?.videoId || item?.id || '';
+                const title = item?.snippet?.title || 'بدون عنوان';
+                const channel = item?.snippet?.channelTitle || 'YouTube';
+                const thumb = item?.snippet?.thumbnails?.medium?.url || item?.snippet?.thumbnails?.default?.url || '';
+                return `
+                    <article class="video-card bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                        <img src="${escapeHtml(thumb)}" alt="${escapeHtml(title)}" class="w-full aspect-video object-cover" />
+                        <div class="p-4 space-y-2 text-right">
+                            <h3 class="font-black text-sm line-clamp-2 text-slate-800">${escapeHtml(title)}</h3>
+                            <p class="text-xs text-slate-500">${escapeHtml(channel)}</p>
+                            <a href="https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold text-primary">
+                                فتح الفيديو
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </a>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        async function loadMyVideos() {
+            if (!currentUid) return;
+            if (!isConnected) {
+                renderVideoCards(myVideosGrid, [], 'اربط حسابك أولاً لعرض فيديوهاتك.');
+                return;
+            }
+            myVideosGrid.innerHTML = '<div class="col-span-full text-center text-slate-400 py-8">جاري تحميل فيديوهاتك...</div>';
+            try {
+                const data = await fetchJson(`${SERVER_BASE}/api/youtube/my-videos?userId=${encodeURIComponent(currentUid)}&maxResults=9`);
+                renderVideoCards(myVideosGrid, data.items, 'لا يوجد فيديوهات حتى الآن.');
+            } catch (error) {
+                renderVideoCards(myVideosGrid, [], `تعذر تحميل فيديوهاتك: ${error.message}`);
+            }
+        }
+
+        connectBtn.addEventListener('click', async () => {
+            if (!currentUid) {
+                window.location.href = 'signup.html';
+                return;
+            }
+            connectBtn.disabled = true;
+            connectBtn.textContent = 'جاري التحضير...';
+            try {
+                const data = await fetchJson(`${SERVER_BASE}/api/youtube/connect/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: currentUid })
+                });
+                const popup = window.open(data.authUrl, 'youtubeOAuth', 'width=540,height=700');
+                if (!popup) throw new Error('يرجى السماح بفتح نافذة تسجيل الدخول');
+            } catch (error) {
+                setConnectionState(false, `⚠️ ${error.message}`);
+            } finally {
+                connectBtn.disabled = false;
+                connectBtn.textContent = 'ربط الحساب';
+            }
+        });
+
+        window.addEventListener('message', async (event) => {
+            if (!event?.data || event.data.type !== 'youtube-connected') return;
+            await checkConnectionStatus();
+            await loadMyVideos();
+        });
+
+        refreshMyVideosBtn.addEventListener('click', loadMyVideos);
+
+        uploadForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!currentUid) return;
+            if (!isConnected) {
+                uploadStatus.textContent = '⚠️ اربط حساب YouTube أولاً.';
+                uploadStatus.className = 'mt-3 text-sm font-bold text-amber-600';
+                return;
+            }
+
+            const title = document.getElementById('videoTitle').value.trim();
+            const description = document.getElementById('videoDescription').value.trim();
+            const privacyStatus = document.getElementById('videoPrivacy').value;
+            const file = document.getElementById('videoFile').files?.[0];
+
+            if (!file) {
+                uploadStatus.textContent = '⚠️ اختر ملف فيديو.';
+                uploadStatus.className = 'mt-3 text-sm font-bold text-amber-600';
+                return;
+            }
+            if (file.size > 25 * 1024 * 1024) {
+                uploadStatus.textContent = '⚠️ حجم الفيديو أكبر من 25MB.';
+                uploadStatus.className = 'mt-3 text-sm font-bold text-amber-600';
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadStatus.textContent = 'جاري تجهيز الفيديو...';
+            uploadStatus.className = 'mt-3 text-sm font-bold text-slate-600';
+
+            try {
+                const videoBase64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const result = String(reader.result || '');
+                        const payload = result.includes(',') ? result.split(',')[1] : '';
+                        if (!payload) reject(new Error('تعذر قراءة الملف')); else resolve(payload);
+                    };
+                    reader.onerror = () => reject(new Error('تعذر قراءة الملف'));
+                    reader.readAsDataURL(file);
+                });
+
+                uploadStatus.textContent = 'جاري رفع الفيديو إلى YouTube...';
+                const result = await fetchJson(`${SERVER_BASE}/api/youtube/upload`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        userId: currentUid,
+                        title,
+                        description,
+                        privacyStatus,
+                        mimeType: file.type || 'video/mp4',
+                        videoBase64
+                    })
+                });
+
+                uploadStatus.textContent = `✅ تم رفع الفيديو بنجاح: ${result.title || title}`;
+                uploadStatus.className = 'mt-3 text-sm font-bold text-emerald-600';
+                uploadForm.reset();
+                await loadMyVideos();
+            } catch (error) {
+                uploadStatus.textContent = `❌ ${error.message}`;
+                uploadStatus.className = 'mt-3 text-sm font-bold text-red-600';
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        });
+
+        async function searchDiscoverVideos() {
+            const query = discoverQuery.value.trim();
+            if (!query) {
+                renderVideoCards(discoverGrid, [], 'اكتب كلمة بحث أولاً.');
+                return;
+            }
+            discoverGrid.innerHTML = '<div class="col-span-full text-center text-slate-400 py-8">جاري البحث...</div>';
+            try {
+                const data = await fetchJson(`${SEARCH_API}?q=${encodeURIComponent(query)}&maxResults=9`);
+                renderVideoCards(discoverGrid, data.items, 'لا توجد نتائج.');
+            } catch (error) {
+                renderVideoCards(discoverGrid, [], `تعذر البحث: ${error.message}`);
+            }
+        }
+
+        searchDiscoverBtn.addEventListener('click', searchDiscoverVideos);
+        discoverQuery.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                searchDiscoverVideos();
+            }
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'signup.html';
+                return;
+            }
+            currentUid = user.uid;
+            await checkConnectionStatus();
+            await loadMyVideos();
+        });
+    </script>
+</body>
+</html>

@@ -21,6 +21,19 @@ service cloud.firestore {
       );
     }
 
+    function currentUserRole() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : 'student';
+    }
+
+    function isModeratorRole() {
+      return isSignedIn() && (
+        currentUserRole() in ['admin', 'teacher', 'moderator'] ||
+        request.auth.token.role in ['admin', 'teacher', 'moderator']
+      );
+    }
+
     function roomRef(roomId) {
       return /databases/$(database)/documents/study-rooms/$(roomId);
     }
@@ -104,6 +117,65 @@ service cloud.firestore {
       match /progress/{subjectId} {
         allow get, list: if isSignedIn() && request.auth.uid == userId;
         allow create, update, delete: if isSignedIn() && request.auth.uid == userId;
+      }
+    }
+
+    match /enrollments/{enrollmentId} {
+      allow get: if isSignedIn() && (
+        isModeratorRole() ||
+        enrollmentId.matches('^' + request.auth.uid + '_.*$') ||
+        (resource.data.userId is string && resource.data.userId == request.auth.uid)
+      );
+      allow list: if isSignedIn() && isModeratorRole();
+      allow create, update: if isSignedIn() &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.subject is string;
+      allow delete: if isSignedIn() && (
+        resource.data.userId == request.auth.uid ||
+        isModeratorRole()
+      );
+    }
+
+    match /lesson-forums/{forumId} {
+      allow get, list: if isSignedIn();
+      allow create, update, delete: if false;
+
+      match /posts/{postId} {
+        allow get, list: if isSignedIn();
+        allow create: if isSignedIn() &&
+          request.resource.data.authorId == request.auth.uid &&
+          request.resource.data.subject is string &&
+          request.resource.data.lesson is string &&
+          request.resource.data.text is string;
+        allow update: if isSignedIn() && (
+          resource.data.authorId == request.auth.uid ||
+          isModeratorRole()
+        );
+        allow delete: if isSignedIn() && (
+          resource.data.authorId == request.auth.uid ||
+          isModeratorRole()
+        );
+
+        match /replies/{replyId} {
+          allow get, list: if isSignedIn();
+          allow create: if isSignedIn() &&
+            request.resource.data.authorId == request.auth.uid &&
+            request.resource.data.text is string;
+          allow update, delete: if isSignedIn() && (
+            resource.data.authorId == request.auth.uid ||
+            isModeratorRole()
+          );
+        }
+      }
+
+      match /reports/{reportId} {
+        allow get, list: if isSignedIn() && isModeratorRole();
+        allow create: if isSignedIn() &&
+          request.resource.data.reporterId == request.auth.uid &&
+          request.resource.data.reason is string &&
+          request.resource.data.status == 'open';
+        allow update: if isSignedIn() && isModeratorRole();
+        allow delete: if false;
       }
     }
 

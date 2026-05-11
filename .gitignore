@@ -10,7 +10,8 @@ yarn-error.log*
 .env.*.local
 
 # Build Files
-dist/
+dist/*
+!dist/output.css
 build/
 *.tsbuildinfo
 

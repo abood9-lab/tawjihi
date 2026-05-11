@@ -63,6 +63,9 @@
         <a href="quiz.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl">
             <span class="material-symbols-outlined">bolt</span> وضع التركيز
         </a>
+        <a href="youtube-connect.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl">
+            <span class="material-symbols-outlined">smart_display</span> ربط YouTube
+        </a>
     </nav>
 </aside>
 
@@ -172,16 +175,10 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { CONFIG } from "./config.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
-        authDomain: "tawj-d1f01.firebaseapp.com",
-        projectId: "tawj-d1f01",
-        storageBucket: "tawj-d1f01.firebasestorage.app",
-        messagingSenderId: "124295262421",
-        appId: "1:124295262421:web:87cd51227a13e0a710725c"
-    };
+    const firebaseConfig = CONFIG.FIREBASE;
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);

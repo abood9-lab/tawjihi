@@ -160,15 +160,9 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { CONFIG } from "./config.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
-        authDomain: "tawj-d1f01.firebaseapp.com",
-        projectId: "tawj-d1f01",
-        storageBucket: "tawj-d1f01.firebasestorage.app",
-        messagingSenderId: "124295262421",
-        appId: "1:124295262421:web:87cd51227a13e0a710725c"
-    };
+    const firebaseConfig = CONFIG.FIREBASE;
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);

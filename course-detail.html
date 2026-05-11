@@ -32,6 +32,46 @@
         .toast.error { background-color: #ef4444; }
         .toast.info { background-color: #3b82f6; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .forum-shell { background: #f7f9ff; border: 1px solid #e2e8f5; }
+        .forum-composer-card, .forum-post-card { background: #fff; border: 1px solid #dbe3ef; border-radius: 1.2rem; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04); }
+        .forum-input { background: #f7f9fe; border: 1px solid #d9e2f0; color: #1e293b; }
+        .forum-input::placeholder { color: #8a97ab; }
+        .forum-subtle { color: #8b98ae; }
+        .forum-avatar { width: 56px; height: 56px; border-radius: 9999px; background: linear-gradient(135deg, #dbe7ff 0%, #c2d4ff 100%); color: #4065a8; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #cfd9ea; }
+        .forum-post-btn { background: #8399bf; border: 1px solid #7c92b7; color: #fff; }
+        .forum-post-btn:disabled { opacity: .65; cursor: not-allowed; }
+        .forum-action { color: #264b8b; font-weight: 700; }
+        .forum-action-danger { color: #ce3a42; font-weight: 700; }
+        .forum-action-muted { color: #1f2937; font-weight: 700; }
+        .forum-action-secondary { color: #8090a7; font-weight: 700; }
+        .forum-body-text { overflow-wrap: anywhere; word-break: break-word; }
+        .forum-touch-target { min-height: 44px; min-width: 44px; }
+        .forum-divider { border-color: #d7deea; }
+        .forum-menu { background: #fff; border: 1px solid #d8e0ec; box-shadow: 0 16px 28px rgba(15, 23, 42, 0.1); }
+        .forum-reply-box { background: #f7f9fd; border: 1px solid #dbe4f0; }
+        .forum-modal-card { background: #fff; border: 1px solid #dce4f1; }
+        .forum-modal-input { background: #f8faff; border: 1px solid #dbe3ef; color: #1e293b; }
+        .forum-modal-input::placeholder { color: #8ea0ba; }
+        .forum-composer-divider { border-color: #d7deea; }
+        .forum-inline-actions button { flex: 1; justify-content: center; min-width: 0; }
+        @media (max-width: 640px) {
+            .forum-shell { border-radius: 1.25rem; padding: 0.65rem; }
+            .forum-composer-card, .forum-post-card { border-radius: 1rem; }
+            .forum-avatar { width: 42px; height: 42px; font-size: 1.1rem; }
+            .forum-post-btn { padding-inline: 1rem; min-height: 44px; min-width: 0; border-radius: 0.7rem; }
+            .forum-action-row { flex-wrap: wrap; gap: 0.25rem; }
+            .forum-menu { min-width: 140px; right: 0; left: auto; }
+            .forum-mobile-tight { font-size: 0.78rem; }
+            .forum-modal-card { width: 100%; border-radius: 1.5rem 1.5rem 0 0; padding: 1rem; max-height: 92dvh; overflow-y: auto; }
+            .forum-modal-actions { position: sticky; bottom: 0; background: #fff; padding-top: 0.75rem; }
+            .forum-composer-actions { align-items: center; flex-wrap: wrap; }
+            .forum-composer-media-actions { gap: 0.35rem; width: 100%; flex-wrap: wrap; }
+            .forum-composer-media-actions .forum-touch-target { min-width: 0; padding-inline: 0.6rem; flex: 1 1 calc(50% - 0.35rem); border: 1px solid #d9e2f0; border-radius: 0.75rem; background: #f8fbff; }
+            #forumCreatePostBtn { width: 100%; }
+            .forum-inline-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 0.35rem; }
+            .forum-inline-actions button .material-symbols-outlined { font-size: 1.15rem; }
+            .forum-inline-actions button { min-height: 40px; padding-inline: 0.35rem; width: 100%; }
+        }
     </style>
 </head>
 <body class="bg-background text-slate-900 pb-24 lg:pb-0">
@@ -74,6 +114,13 @@
             </div>
         </div>
 
+        <section id="enrollmentGate" class="hidden bg-amber-50 border border-amber-200 rounded-3xl p-6 mb-8 text-right">
+            <h2 class="text-xl font-black text-amber-800 mb-2">يلزم الالتحاق بالمادة أولاً</h2>
+            <p class="text-amber-700 text-sm mb-4">للوصول إلى المحتوى المتقدم والمنتدى، اضغط الالتحاق المجاني من صفحة المواد.</p>
+            <a id="enrollmentLink" href="courses.html" class="inline-flex items-center px-4 py-2 rounded-xl bg-primary text-white font-black">اذهب للمواد والالتحاق</a>
+        </section>
+
+        <div id="advancedLessonContent">
         <section id="youtubeSearchSection" class="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 md:p-8 mb-8">
             <div class="flex items-center justify-between gap-3 mb-6">
                 <div class="text-right">
@@ -135,6 +182,51 @@
                     </div>
                 </div>
             </aside>
+        </div>
+
+        <section class="forum-shell rounded-[2rem] shadow-sm p-3 sm:p-4 md:p-6 mt-8">
+            <div class="mb-5 md:mb-6 text-right">
+                <h2 class="text-xl sm:text-2xl font-black text-slate-800">منتدى الدرس</h2>
+                <p class="forum-subtle text-sm">منشورات وردود مرتبطة بالمادة والدرس الحالي.</p>
+            </div>
+
+            <div class="forum-composer-card p-3.5 sm:p-4 md:p-6 mb-5 md:mb-6">
+                <div class="flex items-start gap-2.5 sm:gap-3">
+                    <div id="forumComposerAvatar" class="forum-avatar">؟</div>
+                    <div class="flex-1 space-y-2.5 sm:space-y-3">
+                        <textarea id="forumPostText" class="forum-input w-full rounded-2xl p-3.5 sm:p-4 text-right text-sm sm:text-base forum-body-text bg-white border-0" rows="3" placeholder="ماذا يخطر في بالك ؟"></textarea>
+                        <input id="forumPostImage" type="url" class="forum-input hidden w-full rounded-2xl p-3 text-right text-sm" placeholder="رابط صورة (https://...)"/>
+                        <input id="forumPostVideo" type="url" class="forum-input hidden w-full rounded-2xl p-3 text-right text-sm" placeholder="رابط فيديو (YouTube / MP4)"/>
+                        <hr class="forum-composer-divider">
+                        <div class="forum-composer-actions flex items-center justify-between gap-2.5 sm:gap-3">
+                            <div class="forum-composer-media-actions flex items-center gap-3 sm:gap-4">
+                            <button id="forumToggleImageInput" class="forum-action forum-touch-target inline-flex items-center justify-center sm:justify-start gap-2 text-sm rounded-xl px-3">
+                                <span class="material-symbols-outlined text-base">image</span>
+                                صورة
+                            </button>
+                            <button id="forumToggleVideoInput" class="forum-action forum-touch-target inline-flex items-center justify-center sm:justify-start gap-2 text-sm rounded-xl px-3">
+                                <span class="material-symbols-outlined text-base">videocam</span>
+                                فيديو
+                            </button>
+                            </div>
+                            <button id="forumCreatePostBtn" class="forum-post-btn forum-touch-target inline-flex items-center justify-center gap-2 w-auto min-w-[120px] px-6 py-2.5 rounded-xl font-black">
+                                <span class="material-symbols-outlined text-base">send</span>
+                                نشر
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="forumPosts" class="space-y-5">
+                <div class="text-center forum-subtle py-6">جاري تحميل المنتدى...</div>
+            </div>
+
+            <div id="moderationPanel" class="hidden mt-8 border-t forum-divider pt-6">
+                <h3 class="text-lg font-black text-slate-800 mb-3 text-right">لوحة البلاغات (مشرف)</h3>
+                <div id="reportsList" class="space-y-3"></div>
+            </div>
+        </section>
         </div>
     </div>
 </main>
@@ -239,6 +331,27 @@
     </div>
 </div>
 
+<div id="forumActionModal" class="fixed inset-0 bg-black/50 hidden items-end md:items-center justify-center z-[120] p-0 md:p-4">
+    <div class="forum-modal-card w-full md:max-w-md rounded-t-3xl md:rounded-3xl p-5 md:p-6 shadow-2xl">
+        <div class="flex items-start justify-between gap-3">
+            <div class="text-right">
+                <h3 id="forumActionModalTitle" class="text-lg font-black text-slate-900">إجراء</h3>
+                <p id="forumActionModalMessage" class="text-sm forum-subtle mt-1">هل أنت متأكد؟</p>
+            </div>
+            <button id="forumActionModalClose" class="forum-action forum-touch-target p-1 rounded-lg hover:bg-slate-100">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div id="forumActionModalInputWrap" class="hidden mt-4">
+            <textarea id="forumActionModalInput" rows="3" class="forum-modal-input w-full rounded-xl p-3 text-right text-sm" placeholder=""></textarea>
+        </div>
+        <div class="mt-5 flex items-center gap-2 forum-modal-actions">
+            <button id="forumActionModalConfirm" class="forum-post-btn forum-touch-target w-full px-4 py-2.5 rounded-xl font-black text-sm">تأكيد</button>
+            <button id="forumActionModalCancel" class="forum-touch-target w-full px-4 py-2.5 rounded-xl bg-slate-200 text-slate-700 font-black text-sm">إلغاء</button>
+        </div>
+    </div>
+</div>
+
 <nav class="lg:hidden fixed bottom-0 w-full glass-header border-t border-slate-200 z-[70] safe-bottom h-16 flex justify-around items-center">
     <a href="dashboard.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors">
         <span class="material-symbols-outlined">dashboard</span>
@@ -257,21 +370,33 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        serverTimestamp,
+        getDoc,
+        collection,
+        addDoc,
+        query,
+        where,
+        orderBy,
+        onSnapshot,
+        getDocs,
+        updateDoc,
+        deleteDoc,
+        arrayUnion,
+        arrayRemove,
+        increment
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { CONFIG } from "./config.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
-        authDomain: "tawj-d1f01.firebaseapp.com",
-        projectId: "tawj-d1f01",
-        storageBucket: "tawj-d1f01.firebasestorage.app",
-        messagingSenderId: "124295262421",
-        appId: "1:124295262421:web:87cd51227a13e0a710725c"
-    };
+    const firebaseConfig = CONFIG.FIREBASE;
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const YOUTUBE_API_KEY = "AIzaSyDcB8PWSEw8a9nzjPWqyi2y4OhlWqtEPtw";
+    const YOUTUBE_SEARCH_API_URL = CONFIG.YOUTUBE.API_URL || 'http://localhost:3001/api/youtube/search';
 
     let currentUser = null;
     let currentVideoId = null;
@@ -281,6 +406,10 @@
     let currentSubject = null;
     let aiChatHistory = [];
     let aiLocked = false;
+    let currentUserRole = 'student';
+    let currentForumKey = null;
+    let postsUnsubscribe = null;
+    let reportsUnsubscribe = null;
 
     function showToast(message, type = 'info') {
         const toast = document.createElement('div');
@@ -299,13 +428,72 @@
         return div.innerHTML;
     }
 
-    onAuthStateChanged(auth, (user) => {
+    function normalizeForumKey(value) {
+        return (value || 'lesson')
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^\u0600-\u06FF\w-]/g, '')
+            .slice(0, 80);
+    }
+
+    function isModeratorRole() {
+        return ['admin', 'teacher', 'moderator'].includes(currentUserRole);
+    }
+
+    async function sendNotification(userId, type, message, link = '', extra = {}) {
+        if (!userId || !currentUser || userId === currentUser.uid) return;
+        await addDoc(collection(db, 'notifications'), {
+            userId,
+            senderId: currentUser.uid,
+            type,
+            message,
+            link,
+            unread: true,
+            createdAt: serverTimestamp(),
+            ...extra
+        });
+    }
+
+    function setAdvancedContentVisible(isVisible) {
+        document.getElementById('advancedLessonContent').classList.toggle('hidden', !isVisible);
+        document.getElementById('enrollmentGate').classList.toggle('hidden', isVisible);
+    }
+
+    async function loadUserRole() {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+            currentUserRole = userDoc.data().role || (userDoc.data().isTeacher ? 'teacher' : 'student');
+        }
+        document.getElementById('moderationPanel').classList.toggle('hidden', !isModeratorRole());
+    }
+
+    async function checkEnrollmentOrBlock() {
+        const enrollmentId = `${currentUser.uid}_${currentSubject}`;
+        const enrollmentDoc = await getDoc(doc(db, 'enrollments', enrollmentId));
+        const isEnrolled = enrollmentDoc.exists();
+        setAdvancedContentVisible(isEnrolled);
+        const enrollmentLink = document.getElementById('enrollmentLink');
+        enrollmentLink.href = `courses.html#${currentSubject}`;
+        if (!isEnrolled) {
+            showToast('يلزم الالتحاق بالمادة للوصول إلى المحتوى المتقدم', 'info');
+        }
+        return isEnrolled;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
         if (!user) {
             window.location.href = 'signup.html';
             return;
         }
         currentUser = user;
         initializeLesson();
+        await loadUserRole();
+        const isEnrolled = await checkEnrollmentOrBlock();
+        if (isEnrolled) {
+            initializeForum();
+        }
     });
 
     function initializeLesson() {
@@ -313,6 +501,7 @@
         currentVideoId = params.get('v');
         const title = params.get('t') || 'عنوان الفيديو';
         currentSubject = params.get('subject') || 'history';
+        currentForumKey = `${normalizeForumKey(currentSubject)}__${normalizeForumKey(title)}`;
 
         document.getElementById('lessonTitle').innerText = title;
         document.getElementById('videoTitle').innerText = title;
@@ -362,7 +551,7 @@
         results.innerHTML = '<div class="col-span-full text-center py-10 text-slate-400">جاري البحث...</div>';
 
         try {
-            const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=9&q=${encodeURIComponent(query)}&key=${encodeURIComponent(YOUTUBE_API_KEY)}`);
+            const response = await fetch(`${YOUTUBE_SEARCH_API_URL}?q=${encodeURIComponent(query)}&maxResults=9`);
             const data = await response.json();
 
             if (!response.ok || data.error || !data.items?.length) {
@@ -507,6 +696,445 @@
 
     document.getElementById('retryInviteBtn').addEventListener('click', setupInvite);
 
+    function forumPostDoc(postId) {
+        return doc(db, 'lesson-forums', currentForumKey, 'posts', postId);
+    }
+
+    function formatForumTime(timestamp) {
+        if (!timestamp?.toDate) return 'الآن';
+        return timestamp.toDate().toLocaleString('ar', {
+            day: 'numeric',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function avatarInitial(name) {
+        const trimmed = (name || '').trim();
+        if (!trimmed) return '؟';
+        return trimmed[0].toUpperCase();
+    }
+
+    let forumModalResolver = null;
+    function closeForumActionModal(result = null) {
+        const modal = document.getElementById('forumActionModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+        if (forumModalResolver) {
+            forumModalResolver(result);
+            forumModalResolver = null;
+        }
+    }
+
+    function openForumActionModal({
+        title = 'تأكيد',
+        message = '',
+        confirmText = 'تأكيد',
+        cancelText = 'إلغاء',
+        isDanger = false,
+        withInput = false,
+        inputPlaceholder = ''
+    } = {}) {
+        const modal = document.getElementById('forumActionModal');
+        const titleEl = document.getElementById('forumActionModalTitle');
+        const messageEl = document.getElementById('forumActionModalMessage');
+        const inputWrap = document.getElementById('forumActionModalInputWrap');
+        const input = document.getElementById('forumActionModalInput');
+        const confirmBtn = document.getElementById('forumActionModalConfirm');
+        const cancelBtn = document.getElementById('forumActionModalCancel');
+
+        titleEl.textContent = title;
+        messageEl.textContent = message;
+        confirmBtn.textContent = confirmText;
+        cancelBtn.textContent = cancelText;
+        confirmBtn.classList.toggle('!bg-rose-600', isDanger);
+        confirmBtn.classList.toggle('!border-rose-300', isDanger);
+        inputWrap.classList.toggle('hidden', !withInput);
+        input.value = '';
+        input.placeholder = inputPlaceholder;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+        if (withInput) input.focus();
+
+        return new Promise((resolve) => {
+            forumModalResolver = resolve;
+        });
+    }
+
+    async function loadReplies(postId) {
+        const repliesWrap = document.querySelector(`[data-replies-for="${postId}"]`);
+        if (!repliesWrap) return;
+        const repliesSnap = await getDocs(query(
+            collection(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies'),
+            orderBy('createdAt', 'asc')
+        ));
+        if (!repliesSnap.docs.length) {
+            repliesWrap.innerHTML = '';
+            return;
+        }
+        repliesWrap.innerHTML = repliesSnap.docs.map((replyDoc) => {
+            const reply = replyDoc.data();
+            const likes = Array.isArray(reply.likes) ? reply.likes : [];
+            const likeLabel = likes.includes(currentUser.uid) ? 'إلغاء الإعجاب' : 'إعجاب';
+            const canPin = isModeratorRole();
+            return `
+                <div class="forum-reply-box rounded-xl p-3 text-right mt-2">
+                    <p class="text-xs font-black text-slate-700 forum-body-text">${escapeHtml(reply.authorName || 'مستخدم')}</p>
+                    <p class="text-sm text-slate-700 mt-1 forum-body-text">${escapeHtml(reply.text || '')}</p>
+                    <div class="mt-2 flex items-center justify-end gap-2 text-xs forum-action-row">
+                        <button data-action="like-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg">${likeLabel} (${likes.length})</button>
+                        <button data-action="report-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="forum-action-muted forum-touch-target px-2 rounded-lg">بلاغ</button>
+                        ${canPin ? `<button data-action="pin-reply" data-post-id="${postId}" data-reply-id="${replyDoc.id}" class="font-bold text-amber-700 forum-touch-target px-2 rounded-lg">${reply.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async function renderPosts(postDocs) {
+        const container = document.getElementById('forumPosts');
+        if (!postDocs.length) {
+            container.innerHTML = '<div class="text-center forum-subtle py-6">لا توجد منشورات بعد</div>';
+            return;
+        }
+        const sortedDocs = [...postDocs].sort((a, b) => {
+            const aPinned = a.data().pinned ? 1 : 0;
+            const bPinned = b.data().pinned ? 1 : 0;
+            if (aPinned !== bPinned) return bPinned - aPinned;
+            const aTime = a.data().createdAt?.toMillis ? a.data().createdAt.toMillis() : 0;
+            const bTime = b.data().createdAt?.toMillis ? b.data().createdAt.toMillis() : 0;
+            return bTime - aTime;
+        });
+        container.innerHTML = sortedDocs.map((postDoc) => {
+            const post = postDoc.data();
+            const likes = Array.isArray(post.likes) ? post.likes : [];
+            const canPin = isModeratorRole();
+            const canDelete = post.authorId === currentUser.uid || isModeratorRole();
+            const authorName = escapeHtml(post.authorName || 'مستخدم');
+            const authorInitial = escapeHtml(avatarInitial(post.authorName || 'مستخدم'));
+            const commentsCount = Number(post.replyCount || 0);
+            return `
+                <article id="post-${postDoc.id}" class="forum-post-card p-3.5 sm:p-4 md:p-5">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="flex items-start gap-2.5 sm:gap-3 min-w-0">
+                            <div class="forum-avatar !w-10 !h-10 sm:!w-12 sm:!h-12 !text-xl sm:!text-2xl">${authorInitial}</div>
+                            <div class="text-right">
+                                <p class="text-base sm:text-lg font-black text-slate-900 forum-body-text">${authorName}</p>
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                    <span class="text-xs forum-subtle">${formatForumTime(post.createdAt)}</span>
+                                    ${post.pinned ? '<span class="text-[10px] px-2 py-1 rounded-full bg-amber-200 text-amber-900 font-black">مثبّت</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                        ${canDelete ? `
+                        <div class="relative">
+                            <button data-action="toggle-post-menu" data-post-id="${postDoc.id}" class="forum-action forum-touch-target p-2 rounded-lg hover:bg-slate-100">
+                                <span class="material-symbols-outlined">more_horiz</span>
+                            </button>
+                            <div data-post-menu="${postDoc.id}" class="forum-menu hidden absolute right-0 top-10 min-w-[160px] rounded-xl p-2 z-10">
+                                <button data-action="delete-post" data-post-id="${postDoc.id}" class="forum-action-danger w-full text-right px-3 py-2 rounded-lg hover:bg-rose-50 inline-flex items-center justify-end gap-2">
+                                    حذف المنشور
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                </button>
+                            </div>
+                        </div>` : '<div></div>'}
+                    </div>
+                    <p class="text-sm sm:text-base text-slate-800 leading-relaxed forum-body-text">${escapeHtml(post.text || '')}</p>
+                    ${post.imageUrl ? `<img src="${escapeHtml(post.imageUrl)}" alt="post" class="mt-3 rounded-xl max-h-72 w-full object-cover"/>` : ''}
+                    ${post.videoUrl ? `<a href="${escapeHtml(post.videoUrl)}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center gap-2 text-sm text-primary font-bold"><span class="material-symbols-outlined text-base">videocam</span>رابط الفيديو</a>` : ''}
+                    <div class="mt-4 flex items-center justify-between text-[1.1rem] sm:text-lg font-black text-slate-500">
+                        <span>${commentsCount} التعليقات</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <span>${likes.length} إعجاب</span>
+                            <span class="material-symbols-outlined text-primary text-2xl">thumb_up</span>
+                        </span>
+                    </div>
+                    <hr class="forum-divider mt-4">
+                    <div class="mt-3 flex items-center justify-between gap-2 text-sm forum-action-row forum-mobile-tight forum-inline-actions">
+                        <button data-action="like-post" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">thumb_up</span>اعجبني</button>
+                        <button data-action="toggle-reply" data-post-id="${postDoc.id}" class="forum-action forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">chat_bubble</span>التعليقات</button>
+                        <button data-action="share-post" data-post-id="${postDoc.id}" class="forum-action-secondary forum-touch-target px-2 rounded-lg inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">share</span>مشاركات</button>
+                        <button data-action="report-post" data-post-id="${postDoc.id}" class="forum-action-muted forum-touch-target px-2 rounded-lg">إبلاغ</button>
+                        ${canPin ? `<button data-action="pin-post" data-post-id="${postDoc.id}" class="font-bold text-amber-700 forum-touch-target px-2 rounded-lg">${post.pinned ? 'إلغاء التثبيت' : 'تثبيت'}</button>` : ''}
+                    </div>
+                    <div class="mt-3 hidden" data-reply-form="${postDoc.id}">
+                        <textarea data-reply-input="${postDoc.id}" rows="2" class="forum-input w-full rounded-xl p-3 text-sm text-right forum-body-text" placeholder="اكتب ردك..."></textarea>
+                        <div class="mt-2 flex justify-end">
+                            <button data-action="submit-reply" data-post-id="${postDoc.id}" class="forum-post-btn forum-touch-target w-full sm:w-auto px-4 py-2 rounded-lg text-xs font-black">إرسال الرد</button>
+                        </div>
+                    </div>
+                    <div data-replies-for="${postDoc.id}" class="mt-3"></div>
+                </article>
+            `;
+        }).join('');
+        await Promise.all(sortedDocs.map((postDoc) => loadReplies(postDoc.id)));
+    }
+
+    function listenForumPosts() {
+        const postsQuery = query(collection(db, 'lesson-forums', currentForumKey, 'posts'), orderBy('createdAt', 'desc'));
+        postsUnsubscribe = onSnapshot(postsQuery, async (snap) => {
+            await renderPosts(snap.docs);
+        });
+    }
+
+    function listenReportsForModerators() {
+        if (!isModeratorRole()) return;
+        const reportsList = document.getElementById('reportsList');
+        const reportsQuery = query(collection(db, 'lesson-forums', currentForumKey, 'reports'), orderBy('createdAt', 'desc'));
+        reportsUnsubscribe = onSnapshot(reportsQuery, (snap) => {
+            if (!snap.docs.length) {
+                reportsList.innerHTML = '<div class="text-sm text-slate-400 text-right">لا توجد بلاغات حالياً</div>';
+                return;
+            }
+            reportsList.innerHTML = snap.docs.map((reportDoc) => {
+                const report = reportDoc.data();
+                const statusBadge = report.status === 'resolved'
+                    ? '<span class="text-[10px] px-2 py-1 rounded-full bg-green-100 text-green-700 font-black">تمت المعالجة</span>'
+                    : '<span class="text-[10px] px-2 py-1 rounded-full bg-rose-100 text-rose-700 font-black">مفتوح</span>';
+                return `
+                    <div class="border border-slate-200 rounded-xl p-3 text-right">
+                        <div class="flex items-center justify-between">
+                            ${statusBadge}
+                            <p class="text-xs text-slate-500">${report.createdAt?.toDate ? report.createdAt.toDate().toLocaleString('ar') : ''}</p>
+                        </div>
+                        <p class="text-sm font-bold text-slate-700 mt-2">بلاغ على ${report.targetType === 'reply' ? 'رد' : 'منشور'}</p>
+                        <p class="text-xs text-slate-600 mt-1">${escapeHtml(report.reason || 'بدون سبب')}</p>
+                        ${report.status !== 'resolved' ? `<div class="mt-2 flex justify-end"><button data-action="resolve-report" data-report-id="${reportDoc.id}" class="px-3 py-2 bg-secondary text-white rounded-lg text-xs font-black">تحديث الحالة: تم الحل</button></div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        });
+    }
+
+    async function initializeForum() {
+        const composerAvatar = document.getElementById('forumComposerAvatar');
+        composerAvatar.textContent = avatarInitial(currentUser.displayName || currentUser.email?.split('@')[0] || 'مستخدم');
+
+        document.getElementById('forumToggleImageInput').addEventListener('click', () => {
+            document.getElementById('forumPostImage').classList.toggle('hidden');
+        });
+        document.getElementById('forumToggleVideoInput').addEventListener('click', () => {
+            document.getElementById('forumPostVideo').classList.toggle('hidden');
+        });
+
+        const forumActionModal = document.getElementById('forumActionModal');
+        const forumActionModalInput = document.getElementById('forumActionModalInput');
+        document.getElementById('forumActionModalClose').addEventListener('click', () => closeForumActionModal(null));
+        document.getElementById('forumActionModalCancel').addEventListener('click', () => closeForumActionModal(null));
+        document.getElementById('forumActionModalConfirm').addEventListener('click', () => {
+            const withInput = !document.getElementById('forumActionModalInputWrap').classList.contains('hidden');
+            closeForumActionModal(withInput ? forumActionModalInput.value : true);
+        });
+        forumActionModal.addEventListener('click', (event) => {
+            if (event.target === forumActionModal) closeForumActionModal(null);
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !forumActionModal.classList.contains('hidden')) {
+                closeForumActionModal(null);
+            }
+        });
+
+        const createBtn = document.getElementById('forumCreatePostBtn');
+        createBtn.addEventListener('click', async () => {
+            const text = document.getElementById('forumPostText').value.trim();
+            const imageUrl = document.getElementById('forumPostImage').value.trim();
+            const videoUrl = document.getElementById('forumPostVideo').value.trim();
+            if (!text) return;
+            await addDoc(collection(db, 'lesson-forums', currentForumKey, 'posts'), {
+                text,
+                imageUrl: imageUrl || '',
+                videoUrl: videoUrl || '',
+                authorId: currentUser.uid,
+                authorName: currentUser.displayName || currentUser.email?.split('@')[0] || 'مستخدم',
+                subject: currentSubject,
+                lesson: document.getElementById('lessonTitle').innerText,
+                likes: [],
+                replyCount: 0,
+                pinned: false,
+                createdAt: serverTimestamp()
+            });
+            document.getElementById('forumPostText').value = '';
+            document.getElementById('forumPostImage').value = '';
+            document.getElementById('forumPostVideo').value = '';
+        });
+
+        document.getElementById('forumPosts').addEventListener('click', async (event) => {
+            const actionEl = event.target.closest('[data-action]');
+            if (!actionEl) return;
+            const action = actionEl.dataset.action;
+            const postId = actionEl.dataset.postId;
+            const postRef = forumPostDoc(postId);
+            const postSnap = await getDoc(postRef);
+            if (!postSnap.exists()) return;
+            const postData = postSnap.data();
+
+            if (action === 'toggle-post-menu') {
+                document.querySelectorAll('[data-post-menu]').forEach((menu) => {
+                    if (menu.getAttribute('data-post-menu') === postId) {
+                        menu.classList.toggle('hidden');
+                    } else {
+                        menu.classList.add('hidden');
+                    }
+                });
+                return;
+            } else if (action === 'toggle-reply') {
+                document.querySelector(`[data-reply-form="${postId}"]`)?.classList.toggle('hidden');
+            } else if (action === 'delete-post') {
+                const canDelete = postData.authorId === currentUser.uid || isModeratorRole();
+                if (!canDelete) return;
+                const confirmed = await openForumActionModal({
+                    title: 'حذف المنشور',
+                    message: 'هل تريد حذف هذا المنشور؟ لا يمكن التراجع بعد الحذف.',
+                    confirmText: 'حذف',
+                    cancelText: 'إلغاء',
+                    isDanger: true
+                });
+                if (!confirmed) return;
+                const repliesSnap = await getDocs(collection(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies'));
+                await Promise.all(repliesSnap.docs.map((replyDoc) => deleteDoc(replyDoc.ref)));
+                await deleteDoc(postRef);
+            } else if (action === 'submit-reply') {
+                const replyInput = document.querySelector(`[data-reply-input="${postId}"]`);
+                const text = replyInput?.value?.trim();
+                if (!text) return;
+                await addDoc(collection(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies'), {
+                    text,
+                    authorId: currentUser.uid,
+                    authorName: currentUser.displayName || currentUser.email?.split('@')[0] || 'مستخدم',
+                    likes: [],
+                    pinned: false,
+                    createdAt: serverTimestamp()
+                });
+                await updateDoc(postRef, { replyCount: increment(1) });
+                replyInput.value = '';
+                await loadReplies(postId);
+                await sendNotification(postData.authorId, 'lesson_reply', `تم الرد على منشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+            } else if (action === 'like-post') {
+                const likes = Array.isArray(postData.likes) ? postData.likes : [];
+                const liked = likes.includes(currentUser.uid);
+                await updateDoc(postRef, { likes: liked ? arrayRemove(currentUser.uid) : arrayUnion(currentUser.uid) });
+                if (!liked) {
+                    await sendNotification(postData.authorId, 'lesson_like', `أعجب أحدهم بمنشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            } else if (action === 'share-post') {
+                const shareUrl = `${window.location.origin}${window.location.pathname}?subject=${encodeURIComponent(currentSubject)}#post-${postId}`;
+                if (navigator.share) {
+                    await navigator.share({ title: 'منشور من منتدى الدرس', url: shareUrl });
+                } else {
+                    await navigator.clipboard.writeText(shareUrl);
+                    showToast('تم نسخ رابط المشاركة', 'success');
+                }
+            } else if (action === 'report-post') {
+                const reason = (await openForumActionModal({
+                    title: 'إرسال بلاغ',
+                    message: 'اكتب سبب البلاغ',
+                    confirmText: 'إرسال البلاغ',
+                    cancelText: 'إلغاء',
+                    withInput: true,
+                    inputPlaceholder: 'مثال: محتوى مسيء أو غير مناسب'
+                }))?.trim();
+                if (!reason) return;
+                await addDoc(collection(db, 'lesson-forums', currentForumKey, 'reports'), {
+                    targetType: 'post',
+                    postId,
+                    targetAuthorId: postData.authorId || '',
+                    reason,
+                    reporterId: currentUser.uid,
+                    status: 'open',
+                    createdAt: serverTimestamp()
+                });
+            } else if (action === 'pin-post' && isModeratorRole()) {
+                const nextPinned = !postData.pinned;
+                await updateDoc(postRef, {
+                    pinned: nextPinned,
+                    pinnedBy: currentUser.uid,
+                    pinnedAt: serverTimestamp()
+                });
+                if (nextPinned) {
+                    await sendNotification(postData.authorId, 'pinned_post', `تم تثبيت منشورك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            } else if (action === 'like-reply') {
+                const replyId = actionEl.dataset.replyId;
+                const replyRef = doc(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies', replyId);
+                const replySnap = await getDoc(replyRef);
+                if (!replySnap.exists()) return;
+                const replyData = replySnap.data();
+                const likes = Array.isArray(replyData.likes) ? replyData.likes : [];
+                const liked = likes.includes(currentUser.uid);
+                await updateDoc(replyRef, { likes: liked ? arrayRemove(currentUser.uid) : arrayUnion(currentUser.uid) });
+                await loadReplies(postId);
+                if (!liked) {
+                    await sendNotification(replyData.authorId, 'lesson_like', `أعجب أحدهم بردك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            } else if (action === 'report-reply') {
+                const replyId = actionEl.dataset.replyId;
+                const reason = (await openForumActionModal({
+                    title: 'إرسال بلاغ',
+                    message: 'اكتب سبب البلاغ على الرد',
+                    confirmText: 'إرسال البلاغ',
+                    cancelText: 'إلغاء',
+                    withInput: true,
+                    inputPlaceholder: 'مثال: رد غير مناسب'
+                }))?.trim();
+                if (!reason) return;
+                const replyRef = doc(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies', replyId);
+                const replySnap = await getDoc(replyRef);
+                const replyData = replySnap.exists() ? replySnap.data() : {};
+                await addDoc(collection(db, 'lesson-forums', currentForumKey, 'reports'), {
+                    targetType: 'reply',
+                    postId,
+                    replyId,
+                    targetAuthorId: replyData.authorId || '',
+                    reason,
+                    reporterId: currentUser.uid,
+                    status: 'open',
+                    createdAt: serverTimestamp()
+                });
+            } else if (action === 'pin-reply' && isModeratorRole()) {
+                const replyId = actionEl.dataset.replyId;
+                const replyRef = doc(db, 'lesson-forums', currentForumKey, 'posts', postId, 'replies', replyId);
+                const replySnap = await getDoc(replyRef);
+                if (!replySnap.exists()) return;
+                const replyData = replySnap.data();
+                const nextPinned = !replyData.pinned;
+                await updateDoc(replyRef, { pinned: nextPinned, pinnedBy: currentUser.uid, pinnedAt: serverTimestamp() });
+                await loadReplies(postId);
+                if (nextPinned) {
+                    await sendNotification(replyData.authorId, 'pinned_post', `تم تثبيت ردك في ${currentSubject}`, `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+                }
+            }
+        });
+
+        document.getElementById('reportsList').addEventListener('click', async (event) => {
+            const resolveBtn = event.target.closest('[data-action="resolve-report"]');
+            if (!resolveBtn || !isModeratorRole()) return;
+            const reportRef = doc(db, 'lesson-forums', currentForumKey, 'reports', resolveBtn.dataset.reportId);
+            const reportSnap = await getDoc(reportRef);
+            if (!reportSnap.exists()) return;
+            const report = reportSnap.data();
+            await updateDoc(reportRef, {
+                status: 'resolved',
+                resolvedAt: serverTimestamp(),
+                resolvedBy: currentUser.uid
+            });
+            await sendNotification(report.reporterId, 'report_update', 'تم تحديث حالة البلاغ إلى: تم الحل', `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+            await sendNotification(report.targetAuthorId, 'report_update', 'تمت مراجعة بلاغ متعلق بمشاركتك', `course-detail.html?subject=${encodeURIComponent(currentSubject)}`);
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('[data-action="toggle-post-menu"]') && !event.target.closest('[data-post-menu]')) {
+                document.querySelectorAll('[data-post-menu]').forEach((menu) => menu.classList.add('hidden'));
+            }
+        });
+
+        listenForumPosts();
+        listenReportsForModerators();
+    }
+
     document.getElementById('toggleCinemaBtn').addEventListener('click', () => {
         document.body.classList.toggle('cinema-mode');
         const btn = document.getElementById('toggleCinemaBtn');
@@ -593,43 +1221,5 @@
     });
 </script>
 <script src="site-shell.js" defer></script>
-<!-- Code injected by live-server -->
-<script>
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script>
 </body>
 </html>

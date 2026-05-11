@@ -23,34 +23,54 @@
 <body class="bg-background text-slate-900 min-h-screen pb-24 lg:pb-0">
   <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 glass-header border-b border-slate-200">
     <span class="text-xl font-black text-primary">TawjihiGuide</span>
-    <a href="teacher.html" class="text-sm font-bold text-primary hover:underline">ا�ع��دة �صفحة ا��&ع��&</a>
+    <a href="teacher.html" class="text-sm font-bold text-primary hover:underline">ا�
+ع��دة �
+صفحة ا�
+�&ع�
+�&</a>
   </header>
 
   <aside class="hidden lg:flex flex-col fixed right-0 top-16 h-[calc(100vh-64px)] w-64 p-4 bg-white border-l border-slate-200 z-40">
     <nav class="flex-1 space-y-2 mt-4 text-right">
       <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">dashboard</span> ���حة ا�تح�'�&
+        <span class="material-symbols-outlined">dashboard</span> �
+��حة ا�
+تح�'�&
       </a>
       <a href="courses.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">menu_book</span> ا��&��اد ا�دراس�`ة
+        <span class="material-symbols-outlined">menu_book</span> ا�
+�&��اد ا�
+دراس�`ة
       </a>
       <a href="quiz.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">quiz</span> ب� �' ا�أسئ�ة
+        <span class="material-symbols-outlined">quiz</span> ب� �' ا�
+أسئ�
+ة
       </a>
       <a href="messages.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">mail</span> ا��&راس�ات
+        <span class="material-symbols-outlined">mail</span> ا�
+�&راس�
+ات
       </a>
       <a href="search-users.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">people</span> ا�بحث ع�  ا�ط�اب
+        <span class="material-symbols-outlined">people</span> ا�
+بحث ع�  ا�
+ط�
+اب
       </a>
       <a href="notifications.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">notifications</span> ا�إشعارات
+        <span class="material-symbols-outlined">notifications</span> ا�
+إشعارات
       </a>
       <a href="leaderboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">leaderboard</span> ا��&تصدر��� 
+        <span class="material-symbols-outlined">leaderboard</span> ا�
+�&تصدر��� 
       </a>
       <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
-        <span class="material-symbols-outlined">person</span> ا��&�ف ا�شخص�`
+        <span class="material-symbols-outlined">person</span> ا�
+�&�
+ف ا�
+شخص�`
       </a>
     </nav>
   </aside>
@@ -58,8 +78,19 @@
   <main class="pt-24 lg:mr-64 px-4 md:px-8 pb-10">
     <div class="max-w-4xl mx-auto space-y-6">
       <div>
-        <h1 class="text-3xl font-black text-slate-800">إدارة ص�اح�`ات ا��&ع��&�`� </h1>
-        <p class="text-slate-500 font-medium mt-1">أضف ا�إ�`�&�`�ات ا��&س�&��ح ��!ا بإضافة ا�أسئ�ة ف�` صفحة ا��&ع��&.</p>
+        <h1 class="text-3xl font-black text-slate-800">إدارة ص�
+اح�`ات ا�
+�&ع�
+�&�`� </h1>
+        <p class="text-slate-500 font-medium mt-1">أضف ا�
+إ�`�&�`�
+ات ا�
+�&س�&��ح �
+�!ا بإضافة ا�
+أسئ�
+ة ف�` صفحة ا�
+�&ع�
+�&.</p>
       </div>
 
       <div id="statusBox" class="hidden rounded-xl border px-4 py-3 text-sm font-bold"></div>
@@ -67,11 +98,15 @@
       <section id="adminPanel" class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-5 hidden">
         <form id="addTeacherForm" class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3">
           <input id="teacherEmailInput" type="email" required placeholder="teacher@example.com" class="w-full rounded-2xl border-slate-200 focus:ring-primary" />
-          <button type="submit" class="px-6 py-3 bg-primary text-white font-black rounded-2xl">إضافة �'�&ع��&</button>
+          <button type="submit" class="px-6 py-3 bg-primary text-white font-black rounded-2xl">إضافة �'�&ع�
+�&</button>
         </form>
 
         <div class="border-t border-slate-100 pt-4">
-          <h2 class="text-lg font-black mb-3">ا��ائ�&ة ا�حا��`ة</h2>
+          <h2 class="text-lg font-black mb-3">ا�
+�ائ�&ة ا�
+حا�
+�`ة</h2>
           <div id="teachersList" class="space-y-2"></div>
         </div>
       </section>
@@ -80,8 +115,14 @@
         <div class="flex items-start gap-3 text-red-700 bg-red-50 border border-red-200 rounded-xl p-4">
           <span class="material-symbols-outlined">gpp_bad</span>
           <div>
-            <p class="font-black">غ�`ر �&صرح ��' با�دخ���</p>
-            <p class="text-sm">�!ذ�! ا�صفحة �&تاحة ف�ط ���&شرف�`�  (Admin).</p>
+            <p class="font-black">غ�`ر �&صرح �
+�' با�
+دخ���
+</p>
+            <p class="text-sm">�!ذ�! ا�
+صفحة �&تاحة ف�ط �
+�
+�&شرف�`�  (Admin).</p>
           </div>
         </div>
       </section>
@@ -91,33 +132,39 @@
   <nav class="lg:hidden fixed bottom-0 w-full glass-header border-t border-slate-200 z-[70] safe-bottom h-16 flex justify-around items-center">
     <a href="dashboard.html" class="flex flex-col items-center gap-1 text-slate-400">
       <span class="material-symbols-outlined">dashboard</span>
-      <span class="text-[10px] font-bold">ا�رئ�`س�`ة</span>
+      <span class="text-[10px] font-bold">ا�
+رئ�`س�`ة</span>
     </a>
     <a href="teacher.html" class="flex flex-col items-center gap-1 text-primary">
       <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
-      <span class="text-[10px] font-black">ا��&ع��&</span>
+      <span class="text-[10px] font-black">ا�
+�&ع�
+�&</span>
     </a>
     <a href="admin-teachers.html" class="flex flex-col items-center gap-1 text-slate-400">
       <span class="material-symbols-outlined">admin_panel_settings</span>
-      <span class="text-[10px] font-bold">ا�ص�اح�`ات</span>
+      <span class="text-[10px] font-bold">ا�
+ص�
+اح�`ات</span>
     </a>
   </nav>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { CONFIG } from "./config.js";
     import { getFirestore, collection, doc, setDoc, getDocs, query, orderBy, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAqXLDqKYDUyuWKjPHaifA1IAzrLstqY54",
-      authDomain: "tawj-d1f01.firebaseapp.com",
-      projectId: "tawj-d1f01",
-      storageBucket: "tawj-d1f01.firebasestorage.app",
-      messagingSenderId: "124295262421",
-      appId: "1:124295262421:web:87cd51227a13e0a710725c"
-    };
+    const firebaseConfig = CONFIG.FIREBASE;
 
-    // ضع �!� ا إ�`�&�`�ات ا�أد�&�  ا��&س�&��ح ��!�& بإدارة ص�اح�`ات ا��&ع��&�`� 
+    // ضع �!� ا إ�`�&�`�
+ات ا�
+أد�&�  ا�
+�&س�&��ح �
+�!�& بإدارة ص�
+اح�`ات ا�
+�&ع�
+�&�`� 
     const SUPER_ADMIN_EMAILS = [
       "shahedalmefleh850@gmail.com"
     ];
@@ -157,12 +204,17 @@
     }
 
     async function loadTeacherEmails() {
-      teachersList.innerHTML = "<div class='text-sm text-slate-400'>جار�` ا�تح�&�`�...</div>";
+      teachersList.innerHTML = "<div class='text-sm text-slate-400'>جار�` ا�
+تح�&�`�
+...</div>";
       const q = query(collection(db, "teacher_emails"), orderBy("createdAt", "desc"));
       const snap = await getDocs(q);
 
       if (snap.empty) {
-        teachersList.innerHTML = "<div class='text-sm text-slate-400'>�ا �`��جد إ�`�&�`�ات �&ع��&�`�  بعد.</div>";
+        teachersList.innerHTML = "<div class='text-sm text-slate-400'>�
+ا �`��جد إ�`�&�`�
+ات �&ع�
+�&�`�  بعد.</div>";
         return;
       }
 
@@ -188,10 +240,16 @@
           const id = btn.dataset.id;
           try {
             await deleteDoc(doc(db, "teacher_emails", id));
-            showStatus("ت�& حذف ا�إ�`�&�`� �&�  �ائ�&ة ا��&ع��&�`� .", "success");
+            showStatus("ت�& حذف ا�
+إ�`�&�`�
+ �&�  �ائ�&ة ا�
+�&ع�
+�&�`� .", "success");
             await loadTeacherEmails();
           } catch (error) {
-            showStatus(error?.message || "فش� ا�حذف.", "error");
+            showStatus(error?.message || "فش�
+ ا�
+حذف.", "error");
           }
         });
       });
@@ -209,12 +267,18 @@
 
       if (!isSuperAdmin) {
         setAuthorizedUI(false);
-        showStatus("غ�`ر �&صرح: حساب�' ��`س ض�&�  �ائ�&ة ا��&شرف�`� .", "error");
+        showStatus("غ�`ر �&صرح: حساب�' �
+�`س ض�&�  �ائ�&ة ا�
+�&شرف�`� .", "error");
         return;
       }
 
       setAuthorizedUI(true);
-      showStatus("�&رحبا�9 أد�&� �R �`�&�'� �' ا�آ�  إدارة ص�اح�`ات ا��&ع��&�`� .", "success");
+      showStatus("�&رحبا�9 أد�&� �R �`�&�'� �' ا�
+آ�  إدارة ص�
+اح�`ات ا�
+�&ع�
+�&�`� .", "success");
       await loadTeacherEmails();
     });
 
@@ -223,7 +287,9 @@
       const email = normalizeEmail(teacherEmailInput.value);
 
       if (!email) {
-        showStatus("أدخ� بر�`د إ��'تر��� �` صح�`ح.", "error");
+        showStatus("أدخ�
+ بر�`د إ�
+�'تر��� �` صح�`ح.", "error");
         return;
       }
 
@@ -236,10 +302,18 @@
         }, { merge: true });
 
         teacherEmailInput.value = "";
-        showStatus("ت�&ت إضافة ا�إ�`�&�`� ��ائ�&ة ا��&ع��&�`� .", "success");
+        showStatus("ت�&ت إضافة ا�
+إ�`�&�`�
+ �
+�ائ�&ة ا�
+�&ع�
+�&�`� .", "success");
         await loadTeacherEmails();
       } catch (error) {
-        showStatus(error?.message || "فش�ت إضافة ا�إ�`�&�`�.", "error");
+        showStatus(error?.message || "فش�
+ت إضافة ا�
+إ�`�&�`�
+.", "error");
       }
     });
   </script>
