@@ -23,7 +23,8 @@ export const CONFIG = {
 
     // YouTube API Configuration
     YOUTUBE: {
-        API_URL: 'http://localhost:3001/api/youtube/search'
+        API_URL: 'http://localhost:3001/api/youtube/search',
+        SERVER_BASE_URL: 'http://localhost:3001'
     },
 
     // Cloudinary Configuration

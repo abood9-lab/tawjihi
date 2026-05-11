@@ -94,6 +94,83 @@ GET /api/youtube/search?q=<search-term>&maxResults=9
 
 ---
 
+### 4. YouTube Connect Start (OAuth)
+```
+POST /api/youtube/connect/start
+```
+
+**المدخلات:**
+```json
+{
+  "userId": "firebase_uid"
+}
+```
+
+**الرد:**
+```json
+{
+  "success": true,
+  "authUrl": "https://accounts.google.com/o/oauth2/v2/auth?..."
+}
+```
+
+---
+
+### 5. YouTube Connect Callback
+```
+GET /api/youtube/connect/callback?code=...&state=...
+```
+
+يعالج كود OAuth ويحفظ التوكنات على السيرفر للمستخدم.
+
+---
+
+### 6. YouTube Connection Status
+```
+GET /api/youtube/connect/status?userId=<firebase_uid>
+```
+
+**الرد:**
+```json
+{
+  "success": true,
+  "connected": true,
+  "connectedAt": "2026-05-11T06:00:00.000Z"
+}
+```
+
+---
+
+### 7. YouTube My Videos
+```
+GET /api/youtube/my-videos?userId=<firebase_uid>&maxResults=9
+```
+
+يعرض أحدث فيديوهات المستخدم المربوط حسابه.
+
+---
+
+### 8. YouTube Upload Video
+```
+POST /api/youtube/upload
+```
+
+**المدخلات:**
+```json
+{
+  "userId": "firebase_uid",
+  "title": "عنوان الفيديو",
+  "description": "وصف",
+  "privacyStatus": "unlisted",
+  "mimeType": "video/mp4",
+  "videoBase64": "AAAA..."
+}
+```
+
+**ملاحظة:** حد حجم الفيديو الحالي في هذا الإعداد هو 25MB.
+
+---
+
 ## 🔧 معاملات الطلب (Request Parameters)
 
 ### Messages Array
@@ -210,6 +287,9 @@ console.log(data.message);
 ```env
 GROQ_API_KEY=your_api_key_here
 YOUTUBE_API_KEY=your_youtube_api_key_here
+YOUTUBE_CLIENT_ID=your_google_oauth_client_id
+YOUTUBE_CLIENT_SECRET=your_google_oauth_client_secret
+YOUTUBE_OAUTH_REDIRECT_URI=http://localhost:3001/api/youtube/connect/callback
 PORT=3001
 NODE_ENV=development
 ```
