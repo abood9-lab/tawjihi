@@ -5,11 +5,11 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import webpush from 'web-push';
+import { rateLimit } from 'express-rate-limit';
 import { readFile, writeFile, access } from 'fs/promises';
 import { constants as fsConstants } from 'fs';
 import { fileURLToPath } from 'url';
 import path from 'path';
-// Used to generate secure random OAuth state tokens
 import crypto from 'crypto';
 
 const app = express();
@@ -27,6 +27,8 @@ const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY || '';
 const SUBSCRIPTIONS_FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'push-subscriptions.json');
 const YOUTUBE_AUTH_STATES_FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'youtube-auth-states.json');
 const YOUTUBE_TOKENS_FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'youtube-tokens.json');
+const OAUTH_STATE_EXPIRY_MS = 10 * 60 * 1000;
+const YOUTUBE_UPLOAD_MAX_BYTES = 25 * 1024 * 1024;
 
 if (VAPID_PUBLIC_KEY && VAPID_PRIVATE_KEY) {
     webpush.setVapidDetails('mailto:support@whiterchat.me', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
@@ -126,36 +128,23 @@ async function getValidYouTubeAccessToken(userId) {
     return nextRecord.accessToken;
 }
 
-function createRateLimiter({ windowMs, maxRequests }) {
-    const buckets = new Map();
-    return (req, res, next) => {
-        const now = Date.now();
-        const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
-        const key = `${ip}:${req.path}`;
-        const recent = (buckets.get(key) || []).filter((ts) => now - ts < windowMs);
-
-        if (recent.length >= maxRequests) {
-            return res.status(429).json({ error: 'Too many requests. Please try again shortly.' });
-        }
-
-        recent.push(now);
-        buckets.set(key, recent);
-        next();
-    };
-}
-
 function pruneExpiredOAuthStates(statesObject) {
-    const tenMinutes = 10 * 60 * 1000;
     const now = Date.now();
     for (const [stateKey, value] of Object.entries(statesObject)) {
         const createdAt = Number(value?.createdAt || 0);
-        if (!createdAt || now - createdAt > tenMinutes) {
+        if (!createdAt || now - createdAt > OAUTH_STATE_EXPIRY_MS) {
             delete statesObject[stateKey];
         }
     }
 }
 
-const youtubeSensitiveRateLimit = createRateLimiter({ windowMs: 60_000, maxRequests: 6 });
+const youtubeSensitiveRateLimit = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 6,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests. Please try again shortly.' }
+});
 
 app.get('/api/health', (req, res) => {
     res.json({
@@ -375,7 +364,7 @@ app.post('/api/youtube/connect/start', youtubeSensitiveRateLimit, async (req, re
     }
 });
 
-app.get('/api/youtube/connect/callback', async (req, res) => {
+app.get('/api/youtube/connect/callback', youtubeSensitiveRateLimit, async (req, res) => {
     try {
         if (!youtubeOAuthConfigured()) {
             return res.status(500).send('YouTube OAuth is not configured on server');
@@ -392,7 +381,7 @@ app.get('/api/youtube/connect/callback', async (req, res) => {
         if (!stateData || !stateData.userId) {
             return res.status(400).send('Invalid or expired state');
         }
-        const isExpired = Date.now() - Number(stateData.createdAt || 0) > 10 * 60 * 1000;
+        const isExpired = Date.now() - Number(stateData.createdAt || 0) > OAUTH_STATE_EXPIRY_MS;
         if (isExpired) {
             delete states[stateToken];
             await writeJsonFile(YOUTUBE_AUTH_STATES_FILE, states);
@@ -527,11 +516,10 @@ app.post('/api/youtube/upload', youtubeSensitiveRateLimit, async (req, res) => {
         }
 
         const fileBuffer = Buffer.from(videoBase64, 'base64');
-        const maxBytes = 25 * 1024 * 1024;
         if (!fileBuffer.length) {
             return res.status(400).json({ error: 'Uploaded file is empty' });
         }
-        if (fileBuffer.length > maxBytes) {
+        if (fileBuffer.length > YOUTUBE_UPLOAD_MAX_BYTES) {
             return res.status(413).json({ error: 'Video is too large. Max size is 25MB in current server setup' });
         }
 
